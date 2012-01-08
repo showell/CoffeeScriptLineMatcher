@@ -72,8 +72,8 @@ side_by_side = (matches, source_lines, dest_lines) ->
   html += '</table>'
   console.log html  
 
-fn_coffee = 'fuzzy.coffee'
-fn_js = 'fuzzy.js'
+fn_coffee = 'hanoi.coffee'
+fn_js = 'hanoi.js'
 coffee_lines = file_lines(fn_coffee)
 js_lines = file_lines(fn_js)
 matches = fuzzy_match coffee_lines, js_lines
