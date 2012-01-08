@@ -21,6 +21,7 @@ file_lines = (fn) ->
 fuzzy_match = (coffee_lines, js_lines) ->
   js_tokens = (parse_js_tokens(line) for line in js_lines)
   j = 0
+  matches = []
   
   find_js_match = (token) ->
     for k in [j...js_tokens.length]
@@ -42,9 +43,38 @@ fuzzy_match = (coffee_lines, js_lines) ->
           clue_token = token
       if next_js_line < js_tokens.length
         j = next_js_line
-        console.log i+1, j+1, clue_token
+        matches.push [i+1, j+1, clue_token]
+  matches
 
-fn_coffee = 'fuzzy.coffee'
-fn_js = 'fuzzy.js'
-fuzzy_match file_lines(fn_coffee), file_lines(fn_js)
+html_escape = (text) ->
+  text = text.replace /&/g, "&amp;"
+  text = text.replace /</g, "&lt;"
+  text = text.replace />/g, "&gt;"
+  text
 
+side_by_side = (matches, source_lines, dest_lines) ->
+  s_start = d_start = 0
+  html = '<table border=1>'
+  row = (cells) ->
+    html += '<tr valign="top">'
+    html += ("<td><pre>#{html_escape cell}</pre></td>" for cell in cells).join ''
+    html += '</tr>'
+    
+  
+  for match in matches
+    [s_end, d_end] = match
+    s_snippet = source_lines[s_start...s_end].join '\n'
+    d_snippet = dest_lines[d_start...d_end].join '\n'
+    row [s_snippet, d_snippet]
+    s_start = s_end
+    d_start = d_end
+  
+  html += '</table>'
+  console.log html  
+
+fn_coffee = 'hanoi.coffee'
+fn_js = 'hanoi.js'
+coffee_lines = file_lines(fn_coffee)
+js_lines = file_lines(fn_js)
+matches = fuzzy_match coffee_lines, js_lines
+side_by_side matches, coffee_lines, js_lines
