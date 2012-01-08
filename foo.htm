@@ -12,152 +12,88 @@
   #
   # Use case: helper for lru_cache.</pre></td><td><pre>  lru_list = function() {
     var cnt, end_node, lst, remove, start_node;</pre></td></tr><tr valign="top"><td><pre>12,4,cnt</pre></td><td><pre>  cnt = 0</pre></td><td><pre>    cnt = 0;</pre></td></tr><tr valign="top"><td><pre>13,5,start_node</pre></td><td><pre>  start_node = null</pre></td><td><pre>    start_node = null;</pre></td></tr><tr valign="top"><td><pre>14,6,end_node</pre></td><td><pre>  end_node = null
-</pre></td><td><pre>    end_node = null;</pre></td></tr><tr valign="top"><td><pre>16,7,remove</pre></td><td><pre>  remove = (node) -&gt;
-    cnt -= 1</pre></td><td><pre>    remove = function(node) {
-      cnt -= 1;
+</pre></td><td><pre>    end_node = null;</pre></td></tr><tr valign="top"><td><pre>16,7,remove</pre></td><td><pre>  remove = (node) -&gt;</pre></td><td><pre>    remove = function(node) {</pre></td></tr><tr valign="top"><td><pre>17,8,cnt</pre></td><td><pre>    cnt -= 1</pre></td><td><pre>      cnt -= 1;
       if (cnt &lt; 0) {</pre></td></tr><tr valign="top"><td><pre>18,10,throw</pre></td><td><pre>    throw "error" if cnt &lt; 0</pre></td><td><pre>        throw "error";
-      }</pre></td></tr><tr valign="top"><td><pre>19,12,prev</pre></td><td><pre>    if node.prev</pre></td><td><pre>      if (node.prev) {</pre></td></tr><tr valign="top"><td><pre>20,13,next</pre></td><td><pre>      node.prev.next = node.next</pre></td><td><pre>        node.prev.next = node.next;</pre></td></tr><tr valign="top"><td><pre>21,14,else</pre></td><td><pre>    else
+      }</pre></td></tr><tr valign="top"><td><pre>19,12,node</pre></td><td><pre>    if node.prev</pre></td><td><pre>      if (node.prev) {</pre></td></tr><tr valign="top"><td><pre>20,13,next</pre></td><td><pre>      node.prev.next = node.next
+    else
       start_node = node.next
     if node.next
       node.next.prev = node.prev
-    else
-      end_node = node.prev
-  </pre></td><td><pre>      } else {
+    else</pre></td><td><pre>        node.prev.next = node.next;
+      } else {
         start_node = node.next;
       }
       if (node.next) {
         return node.next.prev = node.prev;
-      } else {
-        return end_node = node.prev;
+      } else {</pre></td></tr><tr valign="top"><td><pre>26,20,end_node</pre></td><td><pre>      end_node = node.prev
+  </pre></td><td><pre>        return end_node = node.prev;
       }
-    };</pre></td></tr><tr valign="top"><td><pre>28,23,lst</pre></td><td><pre>  lst =</pre></td><td><pre>    return lst = {</pre></td></tr><tr valign="top"><td><pre>29,24,push</pre></td><td><pre>    push: (v) -&gt;
-      cnt += 1
-      if cnt == 1
-        node =
-          v: v
-          prev: null
-          next: null
-        start_node = node
-        end_node = node
+    };</pre></td></tr><tr valign="top"><td><pre>28,23,lst</pre></td><td><pre>  lst =</pre></td><td><pre>    return lst = {</pre></td></tr><tr valign="top"><td><pre>29,24,push</pre></td><td><pre>    push: (v) -&gt;</pre></td><td><pre>      push: function(v) {
+        var node;</pre></td></tr><tr valign="top"><td><pre>30,26,cnt</pre></td><td><pre>      cnt += 1
+      if cnt == 1</pre></td><td><pre>        cnt += 1;
+        if (cnt === 1) {</pre></td></tr><tr valign="top"><td><pre>32,28,node</pre></td><td><pre>        node =
+          v: v</pre></td><td><pre>          node = {
+            v: v,</pre></td></tr><tr valign="top"><td><pre>34,30,prev</pre></td><td><pre>          prev: null</pre></td><td><pre>            prev: null,</pre></td></tr><tr valign="top"><td><pre>35,31,next</pre></td><td><pre>          next: null</pre></td><td><pre>            next: null
+          };</pre></td></tr><tr valign="top"><td><pre>36,33,start_node</pre></td><td><pre>        start_node = node</pre></td><td><pre>          start_node = node;</pre></td></tr><tr valign="top"><td><pre>37,34,end_node</pre></td><td><pre>        end_node = node
       else
         node =
-          v: v
-          prev: end_node
-          next: null
-        end_node.next = node
+          v: v</pre></td><td><pre>          end_node = node;
+        } else {
+          node = {
+            v: v,</pre></td></tr><tr valign="top"><td><pre>41,38,prev</pre></td><td><pre>          prev: end_node</pre></td><td><pre>            prev: end_node,</pre></td></tr><tr valign="top"><td><pre>42,39,next</pre></td><td><pre>          next: null</pre></td><td><pre>            next: null
+          };</pre></td></tr><tr valign="top"><td><pre>43,41,end_node</pre></td><td><pre>        end_node.next = node
         end_node = node
       # return a function so caller can remove item
-      # from the list
-      -&gt; remove(node)
-    </pre></td><td><pre>      push: function(v) {
-        var node;
-        cnt += 1;
-        if (cnt === 1) {
-          node = {
-            v: v,
-            prev: null,
-            next: null
-          };
-          start_node = node;
-          end_node = node;
-        } else {
-          node = {
-            v: v,
-            prev: end_node,
-            next: null
-          };
-          end_node.next = node;
+      # from the list</pre></td><td><pre>          end_node.next = node;
           end_node = node;
         }
-        return function() {
-          return remove(node);
+        return function() {</pre></td></tr><tr valign="top"><td><pre>47,45,remove</pre></td><td><pre>      -&gt; remove(node)
+    </pre></td><td><pre>          return remove(node);
         };
-      },</pre></td></tr><tr valign="top"><td><pre>49,48,shift</pre></td><td><pre>    shift: -&gt;
-      cnt -= 1
-      throw "error" if cnt &lt; 0
-      v = start_node.v
-      if cnt == 0
-        start_node = null
-        end_node = null
-      else
-        start_node = start_node.next
-        start_node.prev = null
+      },</pre></td></tr><tr valign="top"><td><pre>49,48,shift</pre></td><td><pre>    shift: -&gt;</pre></td><td><pre>      shift: function() {
+        var v;</pre></td></tr><tr valign="top"><td><pre>50,50,cnt</pre></td><td><pre>      cnt -= 1</pre></td><td><pre>        cnt -= 1;
+        if (cnt &lt; 0) {</pre></td></tr><tr valign="top"><td><pre>51,52,throw</pre></td><td><pre>      throw "error" if cnt &lt; 0</pre></td><td><pre>          throw "error";
+        }</pre></td></tr><tr valign="top"><td><pre>52,54,start_node</pre></td><td><pre>      v = start_node.v</pre></td><td><pre>        v = start_node.v;</pre></td></tr><tr valign="top"><td><pre>53,55,cnt</pre></td><td><pre>      if cnt == 0</pre></td><td><pre>        if (cnt === 0) {</pre></td></tr><tr valign="top"><td><pre>54,56,start_node</pre></td><td><pre>        start_node = null</pre></td><td><pre>          start_node = null;</pre></td></tr><tr valign="top"><td><pre>55,57,end_node</pre></td><td><pre>        end_node = null
+      else</pre></td><td><pre>          end_node = null;
+        } else {</pre></td></tr><tr valign="top"><td><pre>57,59,start_node</pre></td><td><pre>        start_node = start_node.next</pre></td><td><pre>          start_node = start_node.next;</pre></td></tr><tr valign="top"><td><pre>58,60,prev</pre></td><td><pre>        start_node.prev = null
       v
-      </pre></td><td><pre>      shift: function() {
-        var v;
-        cnt -= 1;
-        if (cnt &lt; 0) {
-          throw "error";
-        }
-        v = start_node.v;
-        if (cnt === 0) {
-          start_node = null;
-          end_node = null;
-        } else {
-          start_node = start_node.next;
-          start_node.prev = null;
+      </pre></td><td><pre>          start_node.prev = null;
         }
         return v;
       },</pre></td></tr><tr valign="top"><td><pre>61,64,debug</pre></td><td><pre>    debug: -&gt;</pre></td><td><pre>      debug: function() {
-        var node, _results;</pre></td></tr><tr valign="top"><td><pre>62,66,console</pre></td><td><pre>      console.log '----'
-      if cnt == 0</pre></td><td><pre>        console.log('----');
-        if (cnt === 0) {</pre></td></tr><tr valign="top"><td><pre>64,68,empty</pre></td><td><pre>        console.log '(empty)'
-      node = start_node</pre></td><td><pre>          console.log('(empty)');
-        }
-        node = start_node;
+        var node, _results;</pre></td></tr><tr valign="top"><td><pre>62,66,console</pre></td><td><pre>      console.log '----'</pre></td><td><pre>        console.log('----');</pre></td></tr><tr valign="top"><td><pre>63,67,cnt</pre></td><td><pre>      if cnt == 0</pre></td><td><pre>        if (cnt === 0) {</pre></td></tr><tr valign="top"><td><pre>64,68,console</pre></td><td><pre>        console.log '(empty)'</pre></td><td><pre>          console.log('(empty)');
+        }</pre></td></tr><tr valign="top"><td><pre>65,70,node</pre></td><td><pre>      node = start_node</pre></td><td><pre>        node = start_node;
         _results = [];</pre></td></tr><tr valign="top"><td><pre>66,72,while</pre></td><td><pre>      while node
-        console.log node.v
-        node = node.next
-    </pre></td><td><pre>        while (node) {
-          console.log(node.v);
-          _results.push(node = node.next);
+        console.log node.v</pre></td><td><pre>        while (node) {
+          console.log(node.v);</pre></td></tr><tr valign="top"><td><pre>68,74,next</pre></td><td><pre>        node = node.next
+    </pre></td><td><pre>          _results.push(node = node.next);
         }
         return _results;
-      },</pre></td></tr><tr valign="top"><td><pre>70,78,size</pre></td><td><pre>    size: -&gt;
-      cnt
-      </pre></td><td><pre>      size: function() {
-        return cnt;
+      },</pre></td></tr><tr valign="top"><td><pre>70,78,size</pre></td><td><pre>    size: -&gt;</pre></td><td><pre>      size: function() {</pre></td></tr><tr valign="top"><td><pre>71,79,cnt</pre></td><td><pre>      cnt
+      </pre></td><td><pre>        return cnt;
       },</pre></td></tr><tr valign="top"><td><pre>73,81,test</pre></td><td><pre>    test: -&gt;
       # call lru_list().test() to see in action</pre></td><td><pre>      test: function() {
-        var remove_a, remove_b, remove_c;</pre></td></tr><tr valign="top"><td><pre>75,83,hello</pre></td><td><pre>      lst.push "hello"</pre></td><td><pre>        lst.push("hello");</pre></td></tr><tr valign="top"><td><pre>76,84,goodbye</pre></td><td><pre>      lst.push "goodbye"
-      lst.debug()
-      lst.shift()
-      lst.debug()
-      lst.shift()
+        var remove_a, remove_b, remove_c;</pre></td></tr><tr valign="top"><td><pre>75,83,lst</pre></td><td><pre>      lst.push "hello"</pre></td><td><pre>        lst.push("hello");</pre></td></tr><tr valign="top"><td><pre>76,84,goodbye</pre></td><td><pre>      lst.push "goodbye"
       lst.debug()</pre></td><td><pre>        lst.push("goodbye");
+        lst.debug();</pre></td></tr><tr valign="top"><td><pre>78,86,shift</pre></td><td><pre>      lst.shift()
+      lst.debug()
+      lst.shift()
+      lst.debug()</pre></td><td><pre>        lst.shift();
         lst.debug();
         lst.shift();
-        lst.debug();
-        lst.shift();
-        lst.debug();</pre></td></tr><tr valign="top"><td><pre>82,90,remove_a</pre></td><td><pre>      remove_a = lst.push "a"</pre></td><td><pre>        remove_a = lst.push("a");</pre></td></tr><tr valign="top"><td><pre>83,91,remove_b</pre></td><td><pre>      remove_b = lst.push "b"</pre></td><td><pre>        remove_b = lst.push("b");</pre></td></tr><tr valign="top"><td><pre>84,92,remove_c</pre></td><td><pre>      remove_c = lst.push "c"
-      lst.debug()
-      remove_b()
-      lst.debug()
-      remove_c()
-      lst.debug()
-      remove_a()
-      lst.debug()
-      </pre></td><td><pre>        remove_c = lst.push("c");
-        lst.debug();
-        remove_b();
-        lst.debug();
-        remove_c();
-        lst.debug();
-        remove_a();
-        return lst.debug();
+        lst.debug();</pre></td></tr><tr valign="top"><td><pre>82,90,remove_a</pre></td><td><pre>      remove_a = lst.push "a"
+      remove_b = lst.push "b"</pre></td><td><pre>        remove_a = lst.push("a");
+        remove_b = lst.push("b");</pre></td></tr><tr valign="top"><td><pre>84,92,remove_c</pre></td><td><pre>      remove_c = lst.push "c"</pre></td><td><pre>        remove_c = lst.push("c");</pre></td></tr><tr valign="top"><td><pre>85,93,debug</pre></td><td><pre>      lst.debug()</pre></td><td><pre>        lst.debug();</pre></td></tr><tr valign="top"><td><pre>86,94,remove_b</pre></td><td><pre>      remove_b()</pre></td><td><pre>        remove_b();</pre></td></tr><tr valign="top"><td><pre>87,95,lst</pre></td><td><pre>      lst.debug()</pre></td><td><pre>        lst.debug();</pre></td></tr><tr valign="top"><td><pre>88,96,remove_c</pre></td><td><pre>      remove_c()</pre></td><td><pre>        remove_c();</pre></td></tr><tr valign="top"><td><pre>89,97,lst</pre></td><td><pre>      lst.debug()</pre></td><td><pre>        lst.debug();</pre></td></tr><tr valign="top"><td><pre>90,98,remove_a</pre></td><td><pre>      remove_a()</pre></td><td><pre>        remove_a();</pre></td></tr><tr valign="top"><td><pre>91,99,lst</pre></td><td><pre>      lst.debug()
+      </pre></td><td><pre>        return lst.debug();
       }
     };
   };</pre></td></tr><tr valign="top"><td><pre>93,103,lru_cache</pre></td><td><pre>lru_cache = (capacity) -&gt;
   # This is an LRU cache.  An LRU behaves like a hash where old items expire.
   # We implement it as a hash for the core data structure, then we have a linked
-  # list of keys that allows us to keep track of expiring keys.  
-  lst = lru_list()</pre></td><td><pre>  lru_cache = function(capacity) {
-    var add, cache, lst, self, update;
-    lst = lru_list();</pre></td></tr><tr valign="top"><td><pre>98,106,cache</pre></td><td><pre>  cache = {}
-  </pre></td><td><pre>    cache = {};</pre></td></tr><tr valign="top"><td><pre>100,107,add</pre></td><td><pre>  add = (k, v) -&gt;
-    if lst.size() == capacity</pre></td><td><pre>    add = function(k, v) {
-      var old_key;
-      if (lst.size() === capacity) {</pre></td></tr><tr valign="top"><td><pre>102,110,old_key</pre></td><td><pre>      old_key = lst.shift()
+  # list of keys that allows us to keep track of expiring keys.  </pre></td><td><pre>  lru_cache = function(capacity) {
+    var add, cache, lst, self, update;</pre></td></tr><tr valign="top"><td><pre>97,105,lst</pre></td><td><pre>  lst = lru_list()</pre></td><td><pre>    lst = lru_list();</pre></td></tr><tr valign="top"><td><pre>98,106,cache</pre></td><td><pre>  cache = {}
+  </pre></td><td><pre>    cache = {};</pre></td></tr><tr valign="top"><td><pre>100,107,add</pre></td><td><pre>  add = (k, v) -&gt;</pre></td><td><pre>    add = function(k, v) {
+      var old_key;</pre></td></tr><tr valign="top"><td><pre>101,109,lst</pre></td><td><pre>    if lst.size() == capacity</pre></td><td><pre>      if (lst.size() === capacity) {</pre></td></tr><tr valign="top"><td><pre>102,110,old_key</pre></td><td><pre>      old_key = lst.shift()
       # console.log "purging #{old_key} from cache!"</pre></td><td><pre>        old_key = lst.shift();</pre></td></tr><tr valign="top"><td><pre>104,111,delete</pre></td><td><pre>      delete cache[old_key]
     cache[k] =</pre></td><td><pre>        delete cache[old_key];
       }
@@ -167,64 +103,46 @@
         v: v
       };
     };</pre></td></tr><tr valign="top"><td><pre>109,118,update</pre></td><td><pre>  update = (k) -&gt;</pre></td><td><pre>    update = function(k) {
-      var cell;</pre></td></tr><tr valign="top"><td><pre>110,120,cell</pre></td><td><pre>    cell = cache[k]
-    cell.remover()
+      var cell;</pre></td></tr><tr valign="top"><td><pre>110,120,cell</pre></td><td><pre>    cell = cache[k]</pre></td><td><pre>      cell = cache[k];</pre></td></tr><tr valign="top"><td><pre>111,121,remover</pre></td><td><pre>    cell.remover()
     cell.remover = lst.push k
-  </pre></td><td><pre>      cell = cache[k];
-      cell.remover();
+  </pre></td><td><pre>      cell.remover();
       return cell.remover = lst.push(k);
-    };</pre></td></tr><tr valign="top"><td><pre>114,124,self</pre></td><td><pre>  self =</pre></td><td><pre>    return self = {</pre></td></tr><tr valign="top"><td><pre>115,125,put</pre></td><td><pre>    put: (k, v) -&gt;
-      cell = cache[k]
-      if cell
-        update k
-      else
-        add k, v 
-        </pre></td><td><pre>      put: function(k, v) {
-        var cell;
-        cell = cache[k];
-        if (cell) {
-          return update(k);
-        } else {
-          return add(k, v);
+    };</pre></td></tr><tr valign="top"><td><pre>114,124,self</pre></td><td><pre>  self =</pre></td><td><pre>    return self = {</pre></td></tr><tr valign="top"><td><pre>115,125,put</pre></td><td><pre>    put: (k, v) -&gt;</pre></td><td><pre>      put: function(k, v) {
+        var cell;</pre></td></tr><tr valign="top"><td><pre>116,127,cell</pre></td><td><pre>      cell = cache[k]
+      if cell</pre></td><td><pre>        cell = cache[k];
+        if (cell) {</pre></td></tr><tr valign="top"><td><pre>118,129,update</pre></td><td><pre>        update k
+      else</pre></td><td><pre>          return update(k);
+        } else {</pre></td></tr><tr valign="top"><td><pre>120,131,add</pre></td><td><pre>        add k, v 
+        </pre></td><td><pre>          return add(k, v);
         }
-      },</pre></td></tr><tr valign="top"><td><pre>122,134,get</pre></td><td><pre>    get: (k) -&gt;
-      cell = cache[k]
-      return [false, null] if !cell
-      update k
-      [true, cell.v]
-      
-    test: -&gt;
-      # call lru_cache(2).test() to see in action</pre></td><td><pre>      get: function(k) {
-        var cell;
-        cell = cache[k];
+      },</pre></td></tr><tr valign="top"><td><pre>122,134,get</pre></td><td><pre>    get: (k) -&gt;</pre></td><td><pre>      get: function(k) {
+        var cell;</pre></td></tr><tr valign="top"><td><pre>123,136,cell</pre></td><td><pre>      cell = cache[k]
+      return [false, null] if !cell</pre></td><td><pre>        cell = cache[k];
         if (!cell) {
           return [false, null];
-        }
-        update(k);
-        return [true, cell.v];
-      },
-      test: function() {</pre></td></tr><tr valign="top"><td><pre>130,144,one</pre></td><td><pre>      self.put(1, "one")</pre></td><td><pre>        self.put(1, "one");</pre></td></tr><tr valign="top"><td><pre>131,145,two</pre></td><td><pre>      self.put(2, "two")</pre></td><td><pre>        self.put(2, "two");</pre></td></tr><tr valign="top"><td><pre>132,146,three</pre></td><td><pre>      self.put(3, "three")
-      console.log self.get(3)
+        }</pre></td></tr><tr valign="top"><td><pre>125,140,update</pre></td><td><pre>      update k</pre></td><td><pre>        update(k);</pre></td></tr><tr valign="top"><td><pre>126,141,cell</pre></td><td><pre>      [true, cell.v]
+      </pre></td><td><pre>        return [true, cell.v];
+      },</pre></td></tr><tr valign="top"><td><pre>128,143,test</pre></td><td><pre>    test: -&gt;
+      # call lru_cache(2).test() to see in action</pre></td><td><pre>      test: function() {</pre></td></tr><tr valign="top"><td><pre>130,144,self</pre></td><td><pre>      self.put(1, "one")</pre></td><td><pre>        self.put(1, "one");</pre></td></tr><tr valign="top"><td><pre>131,145,two</pre></td><td><pre>      self.put(2, "two")
+      self.put(3, "three")</pre></td><td><pre>        self.put(2, "two");
+        self.put(3, "three");</pre></td></tr><tr valign="top"><td><pre>133,147,console</pre></td><td><pre>      console.log self.get(3)
       console.log self.get(2)
-      console.log self.get(1)</pre></td><td><pre>        self.put(3, "three");
-        console.log(self.get(3));
+      console.log self.get(1)</pre></td><td><pre>        console.log(self.get(3));
         console.log(self.get(2));
         console.log(self.get(1));</pre></td></tr><tr valign="top"><td><pre>136,150,four</pre></td><td><pre>      self.put(4, "four")
       console.log self.get(3)
       console.log self.get(2)
       console.log self.get(4)
-      
-lru_cache(2).test()   
-    
-  
-
-</pre></td><td><pre>        self.put(4, "four");
+      </pre></td><td><pre>        self.put(4, "four");
         console.log(self.get(3));
         console.log(self.get(2));
         return console.log(self.get(4));
       }
     };
-  };
-  lru_cache(2).test();
+  };</pre></td></tr><tr valign="top"><td><pre>141,157,lru_cache</pre></td><td><pre>lru_cache(2).test()   
+    
+  
+
+</pre></td><td><pre>  lru_cache(2).test();
 }).call(this);
 </pre></td></tr></table>

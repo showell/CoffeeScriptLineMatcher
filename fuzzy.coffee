@@ -2,7 +2,7 @@ fs = require 'fs'
 
 blacklist = (word) ->
   return true if word.length <= 2
-  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return']
+  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return', 'else', 'null']
   false
   
 parse_tokens = (line) ->
@@ -34,7 +34,7 @@ fuzzy_match = (coffee_lines, js_lines) ->
     tokens = (token for token in tokens when !seen[token])
     if tokens.length > 0
       for token in tokens
-        seen[token] = true
+        seen[token] = 1
       next_js_line = js_tokens.length
       for token in tokens
         ln = find_js_match(token)
@@ -44,6 +44,9 @@ fuzzy_match = (coffee_lines, js_lines) ->
       if j < next_js_line < js_tokens.length
         j = next_js_line
         matches.push [i, j, clue_token]
+        for token of seen
+          seen[token] += 1
+          delete seen[token] if seen[token] == 3 # new life
   matches.push [coffee_lines.length, js_lines.length, "EOF"]
   matches
 

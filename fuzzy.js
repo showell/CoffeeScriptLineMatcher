@@ -11,7 +11,7 @@
     if (word.length <= 2) {
       return true;
     }
-    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return') {
+    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return' || word === 'else' || word === 'null') {
       return true;
     }
     return false;
@@ -79,7 +79,7 @@
       if (tokens.length > 0) {
         for (_i = 0, _len2 = tokens.length; _i < _len2; _i++) {
           token = tokens[_i];
-          seen[token] = true;
+          seen[token] = 1;
         }
         next_js_line = js_tokens.length;
         for (_j = 0, _len3 = tokens.length; _j < _len3; _j++) {
@@ -93,6 +93,12 @@
         if ((j < next_js_line && next_js_line < js_tokens.length)) {
           j = next_js_line;
           matches.push([i, j, clue_token]);
+          for (token in seen) {
+            seen[token] += 1;
+            if (seen[token] === 3) {
+              delete seen[token];
+            }
+          }
         }
       }
     }
