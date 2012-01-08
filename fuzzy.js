@@ -11,7 +11,7 @@
     if (word.length <= 2) {
       return true;
     }
-    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return' || word === 'else' || word === 'null') {
+    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return' || word === 'else' || word === 'null' || word === 'loop') {
       return true;
     }
     return false;
@@ -95,7 +95,7 @@
           matches.push([i, j, clue_token]);
           for (token in seen) {
             seen[token] += 1;
-            if (seen[token] === 3) {
+            if (seen[token] === 2) {
               delete seen[token];
             }
           }
@@ -112,9 +112,9 @@
     return text;
   };
   side_by_side = function(matches, source_lines, dest_lines) {
-    var d_end, d_snippet, d_start, html, last_match, match, row, s_end, s_snippet, s_start, _i, _len;
+    var d_end, d_snippet, d_start, html, last_match, match, row, s_end, s_snippet, s_start, text, _i, _len;
     s_start = d_start = 0;
-    html = '<table border=1>';
+    html = "<style>\npre {\n  font-size: 10px;\n}\n</style>\n<table border=1>";
     row = function(cells) {
       var cell;
       html += '<tr valign="top">';
@@ -129,12 +129,25 @@
       })()).join('');
       return html += '</tr>';
     };
+    text = function(lines, start, end) {
+      var line;
+      lines = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = lines.length; _i < _len; _i++) {
+          line = lines[_i];
+          _results.push(line.substring(0, 85));
+        }
+        return _results;
+      })();
+      return lines.slice(start, end).join('\n');
+    };
     last_match = '';
     for (_i = 0, _len = matches.length; _i < _len; _i++) {
       match = matches[_i];
       s_end = match[0], d_end = match[1];
-      s_snippet = source_lines.slice(s_start, s_end).join('\n');
-      d_snippet = dest_lines.slice(d_start, d_end).join('\n');
+      s_snippet = text(source_lines, s_start, s_end);
+      d_snippet = text(dest_lines, d_start, d_end);
       row(["" + last_match, s_snippet, d_snippet]);
       s_start = s_end;
       d_start = d_end;
@@ -144,7 +157,7 @@
     return console.log(html);
   };
   root = "rosetta_crawl";
-  root = "lru";
+  root = "nodes";
   fn_coffee = "" + root + ".coffee";
   fn_js = "" + root + ".js";
   coffee_lines = file_lines(fn_coffee);

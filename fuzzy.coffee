@@ -2,7 +2,7 @@ fs = require 'fs'
 
 blacklist = (word) ->
   return true if word.length <= 2
-  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return', 'else', 'null']
+  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return', 'else', 'null', 'loop']
   false
   
 parse_tokens = (line) ->
@@ -46,7 +46,7 @@ fuzzy_match = (coffee_lines, js_lines) ->
         matches.push [i, j, clue_token]
         for token of seen
           seen[token] += 1
-          delete seen[token] if seen[token] == 3 # new life
+          delete seen[token] if seen[token] == 2 # new life
   matches.push [coffee_lines.length, js_lines.length, "EOF"]
   matches
 
@@ -58,17 +58,28 @@ html_escape = (text) ->
 
 side_by_side = (matches, source_lines, dest_lines) ->
   s_start = d_start = 0
-  html = '<table border=1>'
+  html = """
+    <style>
+    pre {
+      font-size: 10px;
+    }
+    </style>
+    <table border=1>
+  """
   row = (cells) ->
     html += '<tr valign="top">'
     html += ("<td><pre>#{html_escape cell}</pre></td>" for cell in cells).join ''
     html += '</tr>'
     
+  text = (lines, start, end) ->
+    lines = (line.substring(0, 85) for line in lines)
+    lines[start...end].join '\n'
+    
   last_match = ''
   for match in matches
     [s_end, d_end] = match
-    s_snippet = source_lines[s_start...s_end].join '\n'
-    d_snippet = dest_lines[d_start...d_end].join '\n'
+    s_snippet = text source_lines, s_start, s_end
+    d_snippet = text dest_lines, d_start, d_end
     row ["#{last_match}", s_snippet, d_snippet]
     s_start = s_end
     d_start = d_end
@@ -78,7 +89,7 @@ side_by_side = (matches, source_lines, dest_lines) ->
   console.log html  
 
 root = "rosetta_crawl"
-root = "lru"
+root = "nodes"
 fn_coffee = "#{root}.coffee"
 fn_js = "#{root}.js"
 coffee_lines = file_lines(fn_coffee)
