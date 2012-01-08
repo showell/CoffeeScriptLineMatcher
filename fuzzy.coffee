@@ -50,31 +50,51 @@ html_escape = (text) ->
   text = text.replace />/g, "&gt;"
   text
 
+pre = (s) ->
+  "<pre>#{html_escape s}</pre>"
+  
+
 side_by_side = (matches, source_lines, dest_lines) ->
   s_start = d_start = 0
   html = """
     <style>
     pre {
-      font-size: 10px;
+      font-size: 11px;
+      padding: 4px;
     }
     </style>
+    <p>
+    This is a proof-of-concept of matching CS line numbers to JS
+    line numbers WITHOUT ANY COMPILER SUPPORT!
+    </p>
+    <p>
+    Line numbers are matched up by looking for matching tokens, with
+    a few heuristics for avoiding false matches between CS and JS, such
+    as ignoring JS var statements.
+    </p>
+    
     <table border=1>
   """
   row = (cells) ->
     html += '<tr valign="top">'
-    html += ("<td><pre>#{html_escape cell}</pre></td>" for cell in cells).join ''
+    html += ("<td>#{pre cell}</td>" for cell in cells).join ''
     html += '</tr>'
     
   text = (lines, start, end) ->
     lines = (line.substring(0, 85) for line in lines)
     lines[start...end].join '\n'
-    
+   
+  line_numbers = (start, end, prefix) ->
+    ("#{prefix}:#{ln+1}" for ln in [start...end]).join '\n'
+     
   last_match = ''
   for match in matches
     [s_end, d_end] = match
+    s_line_numbers = line_numbers s_start, s_end, 'cs'
     s_snippet = text source_lines, s_start, s_end
+    d_line_numbers = line_numbers d_start, d_end, 'js'
     d_snippet = text dest_lines, d_start, d_end
-    row ["#{last_match}", s_snippet, d_snippet]
+    row [s_line_numbers, s_snippet, d_line_numbers, d_snippet]
     s_start = s_end
     d_start = d_end
     last_match = match
@@ -82,8 +102,7 @@ side_by_side = (matches, source_lines, dest_lines) ->
   html += '</table>'
   console.log html  
 
-root = "rosetta_crawl"
-root = "hanoi"
+root = "underscore"
 fn_coffee = "#{root}.coffee"
 fn_js = "#{root}.js"
 coffee_lines = file_lines(fn_coffee)
