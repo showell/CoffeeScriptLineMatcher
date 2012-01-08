@@ -2,7 +2,7 @@ fs = require 'fs'
 
 blacklist = (word) ->
   return true if word.length <= 2
-  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this']
+  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return']
   false
   
 parse_tokens = (line) ->
@@ -24,7 +24,7 @@ fuzzy_match = (coffee_lines, js_lines) ->
   matches = []
   
   find_js_match = (token) ->
-    for k in [j+1...js_tokens.length]
+    for k in [j...js_tokens.length]
       return k if token in js_tokens[k]
     js_tokens.length
   
@@ -41,9 +41,10 @@ fuzzy_match = (coffee_lines, js_lines) ->
         if ln < next_js_line
           next_js_line = ln
           clue_token = token
-      if next_js_line < js_tokens.length
+      if j < next_js_line < js_tokens.length
         j = next_js_line
-        matches.push [i+1, j+1, clue_token]
+        matches.push [i, j, clue_token]
+  matches.push [coffee_lines.length, js_lines.length, "EOF"]
   matches
 
 html_escape = (text) ->
@@ -60,20 +61,23 @@ side_by_side = (matches, source_lines, dest_lines) ->
     html += ("<td><pre>#{html_escape cell}</pre></td>" for cell in cells).join ''
     html += '</tr>'
     
-  
+  last_match = ''
   for match in matches
     [s_end, d_end] = match
     s_snippet = source_lines[s_start...s_end].join '\n'
     d_snippet = dest_lines[d_start...d_end].join '\n'
-    row [s_snippet, d_snippet]
+    row ["#{last_match}", s_snippet, d_snippet]
     s_start = s_end
     d_start = d_end
+    last_match = match
   
   html += '</table>'
   console.log html  
 
-fn_coffee = 'hanoi.coffee'
-fn_js = 'hanoi.js'
+root = "rosetta_crawl"
+root = "lru"
+fn_coffee = "#{root}.coffee"
+fn_js = "#{root}.js"
 coffee_lines = file_lines(fn_coffee)
 js_lines = file_lines(fn_js)
 matches = fuzzy_match coffee_lines, js_lines

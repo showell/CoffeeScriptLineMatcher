@@ -44,7 +44,8 @@ ROSETTA_INTRO = """
   </p>
   
   <p>
-  Be a contributor!  You can enhance the Rosetta Code site by <a href="http://rosettacode.org/wiki/Reports:Tasks_not_implemented_in_#{LANGUAGE}">
+  Be a contributor!  You can enhance the Rosetta Code site by 
+  <a href="http://rosettacode.org/wiki/Reports:Tasks_not_implemented_in_#{LANGUAGE}">
   implementing new tasks for #{LANGUAGE}</a>.
   </p>
 """

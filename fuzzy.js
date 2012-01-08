@@ -1,5 +1,5 @@
 (function() {
-  var blacklist, coffee_lines, file_lines, fn_coffee, fn_js, fs, fuzzy_match, html_escape, js_lines, matches, parse_js_tokens, parse_tokens, side_by_side;
+  var blacklist, coffee_lines, file_lines, fn_coffee, fn_js, fs, fuzzy_match, html_escape, js_lines, matches, parse_js_tokens, parse_tokens, root, side_by_side;
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -11,7 +11,7 @@
     if (word.length <= 2) {
       return true;
     }
-    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this') {
+    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return') {
       return true;
     }
     return false;
@@ -53,8 +53,8 @@
     j = 0;
     matches = [];
     find_js_match = function(token) {
-      var k, _ref, _ref2;
-      for (k = _ref = j + 1, _ref2 = js_tokens.length; _ref <= _ref2 ? k < _ref2 : k > _ref2; _ref <= _ref2 ? k++ : k--) {
+      var k, _ref;
+      for (k = j, _ref = js_tokens.length; j <= _ref ? k < _ref : k > _ref; j <= _ref ? k++ : k--) {
         if (__indexOf.call(js_tokens[k], token) >= 0) {
           return k;
         }
@@ -90,12 +90,13 @@
             clue_token = token;
           }
         }
-        if (next_js_line < js_tokens.length) {
+        if ((j < next_js_line && next_js_line < js_tokens.length)) {
           j = next_js_line;
-          matches.push([i + 1, j + 1, clue_token]);
+          matches.push([i, j, clue_token]);
         }
       }
     }
+    matches.push([coffee_lines.length, js_lines.length, "EOF"]);
     return matches;
   };
   html_escape = function(text) {
@@ -105,7 +106,7 @@
     return text;
   };
   side_by_side = function(matches, source_lines, dest_lines) {
-    var d_end, d_snippet, d_start, html, match, row, s_end, s_snippet, s_start, _i, _len;
+    var d_end, d_snippet, d_start, html, last_match, match, row, s_end, s_snippet, s_start, _i, _len;
     s_start = d_start = 0;
     html = '<table border=1>';
     row = function(cells) {
@@ -122,20 +123,24 @@
       })()).join('');
       return html += '</tr>';
     };
+    last_match = '';
     for (_i = 0, _len = matches.length; _i < _len; _i++) {
       match = matches[_i];
       s_end = match[0], d_end = match[1];
       s_snippet = source_lines.slice(s_start, s_end).join('\n');
       d_snippet = dest_lines.slice(d_start, d_end).join('\n');
-      row([s_snippet, d_snippet]);
+      row(["" + last_match, s_snippet, d_snippet]);
       s_start = s_end;
       d_start = d_end;
+      last_match = match;
     }
     html += '</table>';
     return console.log(html);
   };
-  fn_coffee = 'hanoi.coffee';
-  fn_js = 'hanoi.js';
+  root = "rosetta_crawl";
+  root = "lru";
+  fn_coffee = "" + root + ".coffee";
+  fn_js = "" + root + ".js";
   coffee_lines = file_lines(fn_coffee);
   js_lines = file_lines(fn_js);
   matches = fuzzy_match(coffee_lines, js_lines);
