@@ -11,7 +11,7 @@
     if (word.length <= 2) {
       return true;
     }
-    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var') {
+    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this') {
       return true;
     }
     return false;
@@ -53,8 +53,8 @@
     j = 0;
     matches = [];
     find_js_match = function(token) {
-      var k, _ref;
-      for (k = j, _ref = js_tokens.length; j <= _ref ? k < _ref : k > _ref; j <= _ref ? k++ : k--) {
+      var k, _ref, _ref2;
+      for (k = _ref = j + 1, _ref2 = js_tokens.length; _ref <= _ref2 ? k < _ref2 : k > _ref2; _ref <= _ref2 ? k++ : k--) {
         if (__indexOf.call(js_tokens[k], token) >= 0) {
           return k;
         }
@@ -134,8 +134,8 @@
     html += '</table>';
     return console.log(html);
   };
-  fn_coffee = 'hanoi.coffee';
-  fn_js = 'hanoi.js';
+  fn_coffee = 'fuzzy.coffee';
+  fn_js = 'fuzzy.js';
   coffee_lines = file_lines(fn_coffee);
   js_lines = file_lines(fn_js);
   matches = fuzzy_match(coffee_lines, js_lines);

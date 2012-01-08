@@ -2,7 +2,7 @@ fs = require 'fs'
 
 blacklist = (word) ->
   return true if word.length <= 2
-  return true if word in ['for', 'when', 'require', 'true', 'false', 'var']
+  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this']
   false
   
 parse_tokens = (line) ->
@@ -24,7 +24,7 @@ fuzzy_match = (coffee_lines, js_lines) ->
   matches = []
   
   find_js_match = (token) ->
-    for k in [j...js_tokens.length]
+    for k in [j+1...js_tokens.length]
       return k if token in js_tokens[k]
     js_tokens.length
   
@@ -72,8 +72,8 @@ side_by_side = (matches, source_lines, dest_lines) ->
   html += '</table>'
   console.log html  
 
-fn_coffee = 'hanoi.coffee'
-fn_js = 'hanoi.js'
+fn_coffee = 'fuzzy.coffee'
+fn_js = 'fuzzy.js'
 coffee_lines = file_lines(fn_coffee)
 js_lines = file_lines(fn_js)
 matches = fuzzy_match coffee_lines, js_lines
