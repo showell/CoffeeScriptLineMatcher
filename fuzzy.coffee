@@ -2,7 +2,7 @@ fs = require 'fs'
 
 blacklist = (word) ->
   return true if word.length <= 2
-  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return', 'else', 'null', 'loop']
+  return true if word in ['for', 'when', 'require', 'true', 'false', 'var', 'class', 'call', 'this', 'return', 'else', 'null', 'loop', 'unless']
   false
   
 parse_tokens = (line) ->
@@ -12,6 +12,7 @@ parse_tokens = (line) ->
   (word for word in matches when !blacklist word)
 
 parse_js_tokens = (line) ->
+  line = line.replace "\\n", " "
   return [] if ~line.indexOf(" var ")
   parse_tokens line
 
@@ -28,25 +29,18 @@ fuzzy_match = (coffee_lines, js_lines) ->
       return k if token in js_tokens[k]
     js_tokens.length
   
-  seen = {}
   for line, i in coffee_lines
     tokens = parse_tokens line
-    tokens = (token for token in tokens when !seen[token])
     if tokens.length > 0
-      for token in tokens
-        seen[token] = 1
       next_js_line = js_tokens.length
       for token in tokens
         ln = find_js_match(token)
-        if ln < next_js_line
+        if j < ln < next_js_line
           next_js_line = ln
           clue_token = token
       if j < next_js_line < js_tokens.length
         j = next_js_line
         matches.push [i, j, clue_token]
-        for token of seen
-          seen[token] += 1
-          delete seen[token] if seen[token] == 2 # new life
   matches.push [coffee_lines.length, js_lines.length, "EOF"]
   matches
 
@@ -89,7 +83,7 @@ side_by_side = (matches, source_lines, dest_lines) ->
   console.log html  
 
 root = "rosetta_crawl"
-root = "nodes"
+root = "hanoi"
 fn_coffee = "#{root}.coffee"
 fn_js = "#{root}.js"
 coffee_lines = file_lines(fn_coffee)

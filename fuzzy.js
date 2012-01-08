@@ -11,7 +11,7 @@
     if (word.length <= 2) {
       return true;
     }
-    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return' || word === 'else' || word === 'null' || word === 'loop') {
+    if (word === 'for' || word === 'when' || word === 'require' || word === 'true' || word === 'false' || word === 'var' || word === 'class' || word === 'call' || word === 'this' || word === 'return' || word === 'else' || word === 'null' || word === 'loop' || word === 'unless') {
       return true;
     }
     return false;
@@ -31,6 +31,7 @@
     return _results;
   };
   parse_js_tokens = function(line) {
+    line = line.replace("\\n", " ");
     if (~line.indexOf(" var ")) {
       return [];
     }
@@ -40,7 +41,7 @@
     return fs.readFileSync(fn).toString().split('\n');
   };
   fuzzy_match = function(coffee_lines, js_lines) {
-    var clue_token, find_js_match, i, j, js_tokens, line, ln, matches, next_js_line, seen, token, tokens, _i, _j, _len, _len2, _len3;
+    var clue_token, find_js_match, i, j, js_tokens, line, ln, matches, next_js_line, token, tokens, _i, _len, _len2;
     js_tokens = (function() {
       var _i, _len, _results;
       _results = [];
@@ -61,31 +62,15 @@
       }
       return js_tokens.length;
     };
-    seen = {};
     for (i = 0, _len = coffee_lines.length; i < _len; i++) {
       line = coffee_lines[i];
       tokens = parse_tokens(line);
-      tokens = (function() {
-        var _i, _len2, _results;
-        _results = [];
-        for (_i = 0, _len2 = tokens.length; _i < _len2; _i++) {
-          token = tokens[_i];
-          if (!seen[token]) {
-            _results.push(token);
-          }
-        }
-        return _results;
-      })();
       if (tokens.length > 0) {
+        next_js_line = js_tokens.length;
         for (_i = 0, _len2 = tokens.length; _i < _len2; _i++) {
           token = tokens[_i];
-          seen[token] = 1;
-        }
-        next_js_line = js_tokens.length;
-        for (_j = 0, _len3 = tokens.length; _j < _len3; _j++) {
-          token = tokens[_j];
           ln = find_js_match(token);
-          if (ln < next_js_line) {
+          if ((j < ln && ln < next_js_line)) {
             next_js_line = ln;
             clue_token = token;
           }
@@ -93,12 +78,6 @@
         if ((j < next_js_line && next_js_line < js_tokens.length)) {
           j = next_js_line;
           matches.push([i, j, clue_token]);
-          for (token in seen) {
-            seen[token] += 1;
-            if (seen[token] === 2) {
-              delete seen[token];
-            }
-          }
         }
       }
     }
@@ -157,7 +136,7 @@
     return console.log(html);
   };
   root = "rosetta_crawl";
-  root = "nodes";
+  root = "hanoi";
   fn_coffee = "" + root + ".coffee";
   fn_js = "" + root + ".js";
   coffee_lines = file_lines(fn_coffee);
