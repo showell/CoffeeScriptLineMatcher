@@ -72,7 +72,7 @@ side_by_side = (matches, source_lines, dest_lines) ->
     a few heuristics for avoiding false matches between CS and JS, such
     as ignoring JS var statements.
     </p>
-    
+    See code <a href="https://github.com/showell/CoffeeScriptLineMatcher/blob/master/fuzzy.coffee">here</a>.
     <table border=1>
   """
   row = (cells) ->

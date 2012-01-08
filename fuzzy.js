@@ -96,7 +96,7 @@
   side_by_side = function(matches, source_lines, dest_lines) {
     var d_end, d_line_numbers, d_snippet, d_start, html, last_match, line_numbers, match, row, s_end, s_line_numbers, s_snippet, s_start, text, _i, _len;
     s_start = d_start = 0;
-    html = "<style>\npre {\n  font-size: 11px;\n  padding: 4px;\n}\n</style>\n<p>\nThis is a proof-of-concept of matching CS line numbers to JS\nline numbers WITHOUT ANY COMPILER SUPPORT!\n</p>\n<p>\nLine numbers are matched up by looking for matching tokens, with\na few heuristics for avoiding false matches between CS and JS, such\nas ignoring JS var statements.\n</p>\n\n<table border=1>";
+    html = "<style>\npre {\n  font-size: 11px;\n  padding: 4px;\n}\n</style>\n<p>\nThis is a proof-of-concept of matching CS line numbers to JS\nline numbers WITHOUT ANY COMPILER SUPPORT!\n</p>\n<p>\nLine numbers are matched up by looking for matching tokens, with\na few heuristics for avoiding false matches between CS and JS, such\nas ignoring JS var statements.\n</p>\nSee code <a href=\"https://github.com/showell/CoffeeScriptLineMatcher/blob/master/fuzzy.coffee\">here</a>.\n<table border=1>";
     row = function(cells) {
       var cell;
       html += '<tr valign="top">';
