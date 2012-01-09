@@ -102,10 +102,10 @@ side_by_side = (matches, source_lines, dest_lines) ->
   html += '</table>'
   console.log html  
 
-root = "underscore"
-fn_coffee = "#{root}.coffee"
-fn_js = "#{root}.js"
-coffee_lines = file_lines(fn_coffee)
-js_lines = file_lines(fn_js)
-matches = fuzzy_match coffee_lines, js_lines
-side_by_side matches, coffee_lines, js_lines
+do ->
+  fn_coffee = process.argv[2]
+  fn_js = fn_coffee.replace /\.coffee$/, '.js'
+  coffee_lines = file_lines(fn_coffee)
+  js_lines = file_lines(fn_js)
+  matches = fuzzy_match coffee_lines, js_lines
+  side_by_side matches, coffee_lines, js_lines
