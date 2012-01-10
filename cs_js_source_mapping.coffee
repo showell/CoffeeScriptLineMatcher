@@ -5,6 +5,8 @@ get_line_matcher = (line) ->
   # return a function that returns true iff a JS
   # line is likely generated from a CS line
   line = line.split('# ')[0].trim()
+
+  # assignments
   matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+=/g
   if matches
     lhs = matches[0]
@@ -12,6 +14,8 @@ get_line_matcher = (line) ->
     lhs = lhs.replace '@', 'this.'
     return (line) ->
       ~line.indexOf(lhs + " =")
+  
+  # objects
   matches = line.match /^([A-Za-z0-9_]+\s*: )/g
   if matches and matches.indexOf('{') == -1
     lhs = matches[0]
@@ -20,6 +24,15 @@ get_line_matcher = (line) ->
     return null if lhs == 'constructor'
     return (line) ->
       line.trim().indexOf(lhs+':') == 0 or line.trim().indexOf(lhs+' =') > 0
+  
+  # multiple simple args
+  matches = line.match /\(\S+, .*?\) ->/g
+  if matches
+    s = matches[0]
+    s = s.replace "->", "{"
+    return (line) -> line.indexOf(s) > 0
+  
+  # strings
   matches = line.match /"[^"]{4,}"/
   if matches
     str = matches[0]
