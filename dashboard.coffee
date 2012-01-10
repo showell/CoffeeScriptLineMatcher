@@ -1,7 +1,7 @@
 http = require 'http'
 fs = require 'fs'
 
-DIR = '.'
+DIR = null # will be cmd-line arg
 
 walk = (dir, f_match, f_visit) ->
   _walk = (dir) ->
@@ -33,8 +33,11 @@ split_file = (fn) ->
   [parts, root, ext]
   
 list_files = (cb) ->
+  # TODO: clean up file paths, find best match, add ignore facility
   get_files = (regex) ->
-    matcher = (fn) -> fn.match regex
+    # HACK: just exclude node_modules for now
+    matcher = (fn) ->
+      fn.match(regex) and !fn.match(/node_modules/)
     files = []
     walk DIR, matcher, (fn) -> files.push fn
     files
@@ -43,15 +46,22 @@ list_files = (cb) ->
 
   js_file_for = (cs_file) ->
     [cs_path, cs_root] = split_file cs_file
+    match = null
     for js_file in js_files
       [js_path, js_root] = split_file js_file
-      return js_file if js_root == cs_root
-    ''
+      match = js_file if js_root == cs_root
+    match
       
-  cells = ([cs_file, js_file_for cs_file] for cs_file in cs_files)
+  cells = []
+  for cs_file in cs_files
+    js_file = js_file_for cs_file
+    [cs_path, cs_root] = split_file cs_file
+    cs_path = cs_path.join '/'
+    cs_fn = "#{cs_root}.coffee"
+    cells.push [cs_path, cs_fn]
   cb table cells
   
-run_dashboard = ->
+run_dashboard = (port) ->
   server = http.createServer (req, res) ->
     serve_page = (html) ->
       res.writeHeader 200, 'Content-Type': 'text/html'
@@ -60,8 +70,8 @@ run_dashboard = ->
   
     list_files serve_page
 
-  port = 3000
   server.listen port
   console.log "Server running at http://localhost:#{port}/"
   
-run_dashboard()
+[ignore, ignore, DIR, port] = process.argv
+run_dashboard(port)
