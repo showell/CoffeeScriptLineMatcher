@@ -52,14 +52,18 @@ list_files = (cb) ->
       match = js_file if js_root == cs_root
     match
       
-  cells = []
+  rows = []
   for cs_file in cs_files
     js_file = js_file_for cs_file
     [cs_path, cs_root] = split_file cs_file
     cs_path = cs_path.join '/'
-    cs_fn = "#{cs_root}.coffee"
-    cells.push [cs_path, cs_fn]
-  cb table cells
+    row = [cs_path, cs_root]
+    if js_file
+      [js_path, js_root] = split_file js_file
+      js_path = js_path.join '/'
+      row.push js_path
+    rows.push row
+  cb table rows
   
 run_dashboard = (port) ->
   server = http.createServer (req, res) ->
