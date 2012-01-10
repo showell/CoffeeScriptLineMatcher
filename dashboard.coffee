@@ -82,9 +82,9 @@ worst_match = (matches) ->
     [cs, js] = match
     if js - last > max
       max = js - last
-      worst = js
+      worst = js - max + 1
     last = js
-  "worst: #{worst}, #{max} lines"
+  "The longest JS section starts at line #{worst} (#{max} lines)."
     
 view_file = (fn, cb) ->
   cs_files = get_files /\.coffee/
