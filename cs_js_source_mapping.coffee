@@ -5,10 +5,11 @@ get_line_matcher = (line) ->
   # return a function that returns true iff a JS
   # line is likely generated from a CS line
   line = line.split('#')[0].trim()
-  matches = line.match /^([A-Za-z0-9_.\[\]]+)\s+=/g
+  matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+=/g
   if matches
     lhs = matches[0]
     lhs = lhs[0...lhs.length-1].trim()
+    lhs = lhs.replace '@', 'this.'
     return (line) ->
       ~line.indexOf(lhs + " =")
   matches = line.match /^([A-Za-z0-9_]+\s*: )/g
