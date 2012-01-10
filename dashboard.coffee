@@ -73,6 +73,19 @@ list_files = (cb) ->
     rows.push row
   cb table rows
   
+worst_match = (matches) ->
+  # debugging code
+  last = 0
+  max = 0
+  worst = null
+  for match in matches
+    [cs, js] = match
+    if js - last > max
+      max = js - last
+      worst = js
+    last = js
+  "worst: #{worst}, #{max} lines"
+    
 view_file = (fn, cb) ->
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
@@ -85,6 +98,7 @@ view_file = (fn, cb) ->
   js_lines = file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
   html = side_by_side matches, coffee_lines, js_lines
+  html = worst_match(matches) + html
   cb html
   
 run_dashboard = (port) ->
