@@ -1,5 +1,6 @@
 http = require 'http'
 fs = require 'fs'
+url = require 'url'
 
 DIR = null # will be cmd-line arg
 
@@ -58,13 +59,23 @@ list_files = (cb) ->
     js_file = js_file_for cs_file, js_files
     [cs_path, cs_root] = split_file cs_file
     cs_path = cs_path.join '/'
-    row = [cs_path, cs_root]
+    view_link = "<a href='view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
+    row = [cs_path, view_link]
     if js_file
       [js_path, js_root] = split_file js_file
       js_path = js_path.join '/'
       row.push js_path
     rows.push row
   cb table rows
+  
+view_file = (fn, cb) ->
+  cs_files = get_files /\.coffee/
+  js_files = get_files /\.js/
+  throw "illegal file #{fn}" unless fn in cs_files
+  js_file = js_file_for fn, js_files
+  if js_file is null
+    return cb "No JS file for #{fn}"
+  cb fn
   
 run_dashboard = (port) ->
   server = http.createServer (req, res) ->
@@ -73,6 +84,9 @@ run_dashboard = (port) ->
       res.write html
       res.end()
   
+    parts = url.parse(req.url, true)
+    if parts.pathname == '/view'
+      view_file parts.query.FILE, serve_page
     list_files serve_page
 
   server.listen port
