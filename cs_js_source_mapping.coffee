@@ -33,10 +33,14 @@ get_line_matcher = (line) ->
     return (line) -> line.indexOf(s) > 0
   
   # strings
-  matches = line.match /"[^"]{4,}"/
+  matches = line.match /"[^"]+?"|'[^']+?'/g
   if matches
-    str = matches[0]
-    return (line) -> line.indexOf(str) >= 0
+    for str in matches
+      if str.length >= 5
+        return (line) -> line.indexOf(str) >= 0
+
+    
+  # fallthru
   null
 
 exports.source_line_mappings = (coffee_lines, js_lines) ->
