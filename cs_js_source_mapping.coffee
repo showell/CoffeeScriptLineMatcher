@@ -11,11 +11,11 @@ get_line_matcher = (line) ->
     lhs = lhs[0...lhs.length-1].trim()
     return (line) ->
       ~line.indexOf(lhs + " =")
-  matches = line.match /^([A-Za-z0-9_]+: )/g
+  matches = line.match /^([A-Za-z0-9_]+\s*: )/g
   if matches and matches.indexOf('{') == -1
     lhs = matches[0]
     lhs = lhs.trim()
-    lhs = lhs[0...lhs.length-1]
+    lhs = lhs[0...lhs.length-1].trim()
     return null if lhs == 'constructor'
     return (line) ->
       line.trim().indexOf(lhs+':') == 0 or line.trim().indexOf(lhs+' =') > 0
