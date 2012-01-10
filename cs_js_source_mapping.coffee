@@ -4,7 +4,7 @@
 get_line_matcher = (line) ->
   # return a function that returns true iff a JS
   # line is likely generated from a CS line
-  line = line.split('#')[0].trim()
+  line = line.split('# ')[0].trim()
   matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+=/g
   if matches
     lhs = matches[0]
@@ -20,6 +20,10 @@ get_line_matcher = (line) ->
     return null if lhs == 'constructor'
     return (line) ->
       line.trim().indexOf(lhs+':') == 0 or line.trim().indexOf(lhs+' =') > 0
+  matches = line.match /"[^"]{4,}"/
+  if matches
+    str = matches[0]
+    return (line) -> line.indexOf(str) >= 0
   null
 
 exports.source_line_mappings = (coffee_lines, js_lines) ->
