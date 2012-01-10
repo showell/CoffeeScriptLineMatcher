@@ -31,30 +31,31 @@ split_file = (fn) ->
   short_fn = parts.pop()
   [root, ext] = short_fn.split '.'
   [parts, root, ext]
-  
+
+get_files = (regex) ->
+  # HACK: just exclude node_modules for now
+  matcher = (fn) ->
+    fn.match(regex) and !fn.match(/node_modules/)
+  files = []
+  walk DIR, matcher, (fn) -> files.push fn
+  files
+
+js_file_for = (cs_file, js_files) ->
+  [cs_path, cs_root] = split_file cs_file
+  match = null
+  for js_file in js_files
+    [js_path, js_root] = split_file js_file
+    match = js_file if js_root == cs_root
+  match
+      
 list_files = (cb) ->
   # TODO: clean up file paths, find best match, add ignore facility
-  get_files = (regex) ->
-    # HACK: just exclude node_modules for now
-    matcher = (fn) ->
-      fn.match(regex) and !fn.match(/node_modules/)
-    files = []
-    walk DIR, matcher, (fn) -> files.push fn
-    files
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
 
-  js_file_for = (cs_file) ->
-    [cs_path, cs_root] = split_file cs_file
-    match = null
-    for js_file in js_files
-      [js_path, js_root] = split_file js_file
-      match = js_file if js_root == cs_root
-    match
-      
   rows = []
   for cs_file in cs_files
-    js_file = js_file_for cs_file
+    js_file = js_file_for cs_file, js_files
     [cs_path, cs_root] = split_file cs_file
     cs_path = cs_path.join '/'
     row = [cs_path, cs_root]
