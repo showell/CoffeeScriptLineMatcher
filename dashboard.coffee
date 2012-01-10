@@ -25,6 +25,12 @@ table = (rows) ->
     html += '</tr>'
   html += '</table>'
   html
+
+split_file = (fn) ->
+  parts = fn.split '/'
+  short_fn = parts.pop()
+  [root, ext] = short_fn.split '.'
+  [parts, root, ext]
   
 list_files = (cb) ->
   get_files = (regex) ->
@@ -34,8 +40,15 @@ list_files = (cb) ->
     files
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
-  cs_files = cs_files.concat js_files
-  cells = ([file] for file in cs_files)
+
+  js_file_for = (cs_file) ->
+    [cs_path, cs_root] = split_file cs_file
+    for js_file in js_files
+      [js_path, js_root] = split_file js_file
+      return js_file if js_root == cs_root
+    ''
+      
+  cells = ([cs_file, js_file_for cs_file] for cs_file in cs_files)
   cb table cells
   
 run_dashboard = ->
