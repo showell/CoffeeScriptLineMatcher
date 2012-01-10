@@ -6,14 +6,23 @@ get_line_matcher = (line) ->
   # line is likely generated from a CS line
   line = line.split('# ')[0].trim()
 
+  # classes
+  matches = line.match /^class ([@A-Za-z0-9_.\[\]]+)/g
+  if matches
+    s = matches[0]
+    s = s.replace "class ", ""
+    return (line) ->
+      ~line.indexOf(s + " =")
+
   # assignments
   matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+=/g
   if matches
     lhs = matches[0]
     lhs = lhs[0...lhs.length-1].trim()
-    lhs = lhs.replace '@', 'this.'
-    return (line) ->
-      ~line.indexOf(lhs + " =")
+    if lhs.length > 2
+      lhs = lhs.replace '@', '.'
+      return (line) ->
+        ~line.indexOf(lhs + " =")
   
   # objects
   matches = line.match /^([A-Za-z0-9_]+\s*: )/g
@@ -21,7 +30,7 @@ get_line_matcher = (line) ->
     lhs = matches[0]
     lhs = lhs.trim()
     lhs = lhs[0...lhs.length-1].trim()
-    return null if lhs == 'constructor'
+    return null if lhs in ['constructor', 'class']
     return (line) ->
       line.trim().indexOf(lhs+':') == 0 or line.trim().indexOf(lhs+' =') > 0
   
