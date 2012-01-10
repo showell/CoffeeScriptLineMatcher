@@ -1,6 +1,11 @@
 http = require 'http'
 fs = require 'fs'
 url = require 'url'
+{side_by_side} = require './side_by_side'
+{source_line_mappings} = require './cs_js_source_mapping'
+
+file_lines = (fn) ->
+  fs.readFileSync(fn).toString().split '\n'
 
 DIR = null # will be cmd-line arg
 
@@ -72,10 +77,15 @@ view_file = (fn, cb) ->
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
   throw "illegal file #{fn}" unless fn in cs_files
-  js_file = js_file_for fn, js_files
-  if js_file is null
+  js_fn = js_file_for fn, js_files
+  if js_fn is null
     return cb "No JS file for #{fn}"
-  cb fn
+    
+  coffee_lines = file_lines(fn)
+  js_lines = file_lines(js_fn)
+  matches = source_line_mappings coffee_lines, js_lines
+  # side_by_side matches, coffee_lines, js_lines
+  cb "#{matches}"
   
 run_dashboard = (port) ->
   server = http.createServer (req, res) ->
