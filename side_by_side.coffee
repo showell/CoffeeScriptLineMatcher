@@ -54,4 +54,4 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     last_match = match
   
   html += '</table>'
-  console.log html  
+  html  

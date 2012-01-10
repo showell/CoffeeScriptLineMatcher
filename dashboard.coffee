@@ -84,8 +84,8 @@ view_file = (fn, cb) ->
   coffee_lines = file_lines(fn)
   js_lines = file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
-  # side_by_side matches, coffee_lines, js_lines
-  cb "#{matches}"
+  html = side_by_side matches, coffee_lines, js_lines
+  cb html
   
 run_dashboard = (port) ->
   server = http.createServer (req, res) ->

@@ -18,4 +18,4 @@ do ->
   coffee_lines = file_lines(fn_coffee)
   js_lines = file_lines(fn_js)
   matches = source_line_mappings coffee_lines, js_lines
-  side_by_side matches, coffee_lines, js_lines
+  console.log side_by_side matches, coffee_lines, js_lines
