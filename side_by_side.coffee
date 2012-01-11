@@ -4,9 +4,8 @@ html_escape = (text) ->
   text = text.replace />/g, "&gt;"
   text
 
-pre = (s) ->
-  "<pre>#{html_escape s}</pre>"
-  
+pre = (s, klass) ->
+  "<pre class='#{klass}'>#{html_escape s}</pre>"
 
 exports.side_by_side = (matches, source_lines, dest_lines) ->
   html = """
@@ -15,20 +14,29 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
       font-size: 11px;
       padding: 4px;
     }
+    .numbers {
+      color: blue;
+    }
+    .code {
+      width: 610px;
+      overflow: auto;
+    }
     </style>
     <table border=1>
   """
+  
   row = (cells) ->
     html += '<tr valign="top">'
-    html += ("<td>#{pre cell}</td>" for cell in cells).join ''
+    html += ("<td>#{cell}</td>" for cell in cells).join ''
     html += '</tr>'
     
   text = (lines, start, end) ->
-    lines = (line.substring(0, 85) for line in lines)
-    lines[start...end].join '\n'
-   
+    code = lines[start...end].join '\n'
+    pre code, "code"
+
   line_numbers = (start, end, prefix) ->
-    ("#{prefix}:#{ln+1}" for ln in [start...end]).join '\n'
+    numbers = ("#{prefix}:#{ln+1}" for ln in [start...end])
+    pre numbers.join('\n'), "numbers"
      
   last_match = ''
   s_start = 0

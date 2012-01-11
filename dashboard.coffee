@@ -1,16 +1,18 @@
 http = require 'http'
 fs = require 'fs'
 url = require 'url'
+
 {side_by_side} = require './side_by_side'
 {source_line_mappings} = require './cs_js_source_mapping'
+
+DIR = null # will be cmd-line arg
+GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
 
 file_lines = (fn) ->
   fs.readFileSync(fn).toString().split '\n'
 
 get_num_lines_in_file = (fn) ->
   (fs.readFileSync(fn).toString().split '\n').length
-
-DIR = null # will be cmd-line arg
 
 walk = (dir, f_match, f_visit) ->
   _walk = (dir) ->
@@ -170,7 +172,7 @@ about = (cb) ->
     <a href="/">View files</a>
     
     <p>
-      GIT Repository: <a href="https://github.com/showell/CoffeeScriptLineMatcher">CoffeeScriptLineMatcher</a>.
+      GIT Repository: <a href="#{GIT_REPO}">CoffeeScriptLineMatcher</a>.
     </p>
     <p>
       This tool lets you view CS and JS code side by side.
