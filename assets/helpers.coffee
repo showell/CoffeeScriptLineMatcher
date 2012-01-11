@@ -4,4 +4,8 @@ $ ->
   window.onfocus = ->
     f = ->
       location.reload true
-    setTimeout f, 500
+
+    # In some editors, like TextMate, files get saved when you remove
+    # focus from the editor, so we give a couple seconds for the save
+    # to happen and for coffee -wc to wake up.
+    setTimeout f, 2000
