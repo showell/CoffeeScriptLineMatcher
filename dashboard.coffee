@@ -138,7 +138,7 @@ worst_match = (matches) ->
 view_file = (fn, cb) ->
   html = """
     <h4>#{relative_path fn}</h4>
-    <a href="/">View files</a>
+    <a href="/">View files</a> (#{DIR})
     <hr>
     """
   
