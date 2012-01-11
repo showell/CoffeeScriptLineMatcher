@@ -58,12 +58,26 @@ get_files = (regex) ->
   walk DIR, matcher, (fn) -> files.push fn
   files
 
+score_path_similarity = (path1, path2) ->
+  # find out how many common directories there are, to
+  # help us determine the likelihood of path2 being an
+  # output directory for path1
+  score = 0
+  for part in path1
+    score += 1 if part in path2
+  score 
+
 js_file_for = (cs_file, js_files) ->
   [cs_path, cs_root] = split_file cs_file
   match = null
+  score = 0
   for js_file in js_files
     [js_path, js_root] = split_file js_file
-    match = js_file if js_root == cs_root
+    if js_root == cs_root
+      new_score = score_path_similarity(cs_path, js_path)
+      if new_score > score
+        match = js_file
+        score = new_score
   match
       
 list_files = (cb) ->
