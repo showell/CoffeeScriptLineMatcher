@@ -5,6 +5,15 @@ get_line_matcher = (line) ->
   # return a function that returns true iff a JS
   # line is likely generated from a CS line
   line = line.split('# ')[0].trim()
+  return null if line == ''
+
+  # requires
+  if line.indexOf(" = require") > 0
+    matches = line.match /["'].*?["']/g
+    if matches
+      s = matches[0]
+      return (line) ->
+        line.indexOf("= require(#{s})") > 0
 
   # classes
   matches = line.match /^class ([@A-Za-z0-9_.\[\]]+)/g
