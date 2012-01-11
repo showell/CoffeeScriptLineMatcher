@@ -17,16 +17,6 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
       padding: 4px;
     }
     </style>
-    <p>
-    This is a proof-of-concept of matching CS line numbers to JS
-    line numbers <b>without any compiler support</b>!
-    </p>
-    <p>
-    Line numbers are matched up by looking for matching tokens, with
-    a few heuristics for avoiding false matches between CS and JS, such
-    as ignoring JS var statements.
-    </p>
-    See code <a href="https://github.com/showell/CoffeeScriptLineMatcher/blob/master/fuzzy.coffee">here</a>.
     <table border=1>
   """
   row = (cells) ->

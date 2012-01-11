@@ -88,7 +88,6 @@ js_file_for = (cs_file, js_files) ->
   match
       
 list_files = (cb) ->
-  # TODO: clean up file paths, find best match, add ignore facility
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
 
@@ -97,6 +96,7 @@ list_files = (cb) ->
       <title> CS/JS Code Browser</title>
     </head>
     <h2>CS/JS Files in #{DIR}</h2>
+    <a href="about">About</a>
     """
   headers = ['line count for CS', 'coffee', 'JS file']
 
@@ -134,6 +134,12 @@ worst_match = (matches) ->
   "The longest JS section starts at line #{worst} (#{max} lines)."
     
 view_file = (fn, cb) ->
+  html = """
+    <h4>#{relative_path fn}</h4>
+    <a href="/">View files</a>
+    <hr>
+    """
+  
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
   throw "illegal file #{fn}" unless fn in cs_files
@@ -144,10 +150,32 @@ view_file = (fn, cb) ->
   coffee_lines = file_lines(fn)
   js_lines = file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
-  html = side_by_side matches, coffee_lines, js_lines
-  html = worst_match(matches) + html
+  html += worst_match(matches)
+  html += side_by_side matches, coffee_lines, js_lines
   cb html
   
+about = (cb) ->
+  cb """
+    <h2>About</h2>
+    <a href="/">View files</a>
+    
+    <p>
+      GIT Repository: <a href="https://github.com/showell/CoffeeScriptLineMatcher">CoffeeScriptLineMatcher</a>.
+    </p>
+    <p>
+      This tool lets you view CS and JS code side by side.
+    </p>
+    <p>
+      The algorithm for matching up CS lines to JS lines is 
+      independent of the compiler itself.  I've tested the
+      algorithm on several CS examples, but unorthodox coding
+      styles will likely confuse the algorithm.  (Long term,
+      CS itself will have line number support, so this tool
+      can eventually be patched to use native mappings.)
+    </p>
+    """
+    
+    
 run_dashboard = (port) ->
   server = http.createServer (req, res) ->
     serve_page = (html) ->
@@ -158,6 +186,8 @@ run_dashboard = (port) ->
     parts = url.parse(req.url, true)
     if parts.pathname == '/view'
       view_file parts.query.FILE, serve_page
+    else if parts.pathname == '/about'
+      about serve_page
     list_files serve_page
 
   server.listen port
