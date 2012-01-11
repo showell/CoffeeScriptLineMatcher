@@ -9,19 +9,6 @@ pre = (s, klass) ->
 
 exports.side_by_side = (matches, source_lines, dest_lines) ->
   html = """
-    <style>
-    pre {
-      font-size: 11px;
-      padding: 4px;
-    }
-    .numbers {
-      color: blue;
-    }
-    .code {
-      width: 610px;
-      overflow: auto;
-    }
-    </style>
     <table border=1>
     <tr>
       <th>CS</th>

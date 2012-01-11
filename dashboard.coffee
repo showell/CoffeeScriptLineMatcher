@@ -141,6 +141,7 @@ view_file = (fn, cb) ->
   html = """
     <head>
       <title>#{relative_path fn}</title>
+      <link rel="stylesheet" href="dashboard.css" />
     </head>
     <h4>#{relative_path fn}</h4>
     <a href="/">View files</a> (#{DIR})
@@ -167,6 +168,7 @@ about = (cb) ->
   cb """
     <head>
       <title>About CoffeeScriptLineMatcher</title>
+      <link rel="stylesheet" href="dashboard.css" />
     </head>
     <h2>About</h2>
     <a href="/">View files</a>
@@ -202,6 +204,8 @@ run_dashboard = (port) ->
         view_file parts.query.FILE, serve_page
       else if parts.pathname == '/about'
         about serve_page
+      else if parts.pathname == '/dashboard.css'
+        serve_page fs.readFileSync './dashboard.css'
       list_files serve_page
     catch e
       # Right now our code is mostly synchronous, but this won't
