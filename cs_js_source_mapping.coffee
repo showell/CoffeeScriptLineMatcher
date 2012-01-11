@@ -33,9 +33,9 @@ get_line_matcher = (line) ->
         ~line.indexOf(lhs + " " + op)
   
   # objects
-  matches = line.match /^([A-Za-z0-9_]+\s*: )/g
+  matches = line.match /^@?([A-Za-z0-9_]+\s*: )/g
   if matches and matches.indexOf('{') == -1
-    lhs = matches[0]
+    lhs = matches[0].replace '@', ''
     lhs = lhs.trim()
     lhs = lhs[0...lhs.length-1].trim()
     return null if lhs in ['constructor', 'class']
