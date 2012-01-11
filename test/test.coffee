@@ -1,21 +1,25 @@
+fs = require 'fs'
+
 {source_line_mappings} = require '../cs_js_source_mapping'
+file_utils = require '../file_utils'
 
-file_lines = (fn) ->
-  fs.readFileSync(fn).toString().split '\n'
+dir = '../examples'
+cs_files = file_utils.get_files dir, /\.coffee/
+js_files = file_utils.get_files dir, /\.js/
 
-walk = (dir, f_match, f_visit) ->
-  _walk = (dir) ->
-    fns = fs.readdirSync dir
-    dirs = []
-    for fn in fns
-      fn = dir + '/' + fn
-      if f_match fn
-        f_visit fn
-      if fs.statSync(fn).isDirectory()
-        dirs.push fn
-    for dir in dirs
-      _walk dir
-    return
-  _walk(dir)
-  
-# WORK IN PROGRESS
+results = {}
+for fn in cs_files
+  js_fn = file_utils.js_file_for fn, js_files
+  if js_fn is null
+    throw Error "need to compile js"
+    
+  coffee_lines = file_utils.file_lines(fn)
+  js_lines = file_utils.file_lines(js_fn)
+  matches = source_line_mappings coffee_lines, js_lines
+  map = {}
+  for match in matches
+    [cs, js] = match
+    map[cs] = js
+  results[file_utils.relative_path dir, fn] = map
+data = JSON.stringify results, null, ' '
+fs.writeFileSync 'test.json', data
