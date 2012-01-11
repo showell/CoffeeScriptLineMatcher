@@ -51,6 +51,11 @@ get_line_matcher = (line) ->
   # fallthru
   null
 
+
+is_comment_line = (line) ->
+  line = line.trim()
+  return line == '' or line[0] == '#'
+
 exports.source_line_mappings = (coffee_lines, js_lines) ->
   # Return an array of source line mappings, where each mapping
   # is an array with these elements:
@@ -59,6 +64,7 @@ exports.source_line_mappings = (coffee_lines, js_lines) ->
   #
   # Not every CS line gets a mapping, but ideally enough lines get
   # mapped to help out downstream tools.
+  curr_cs_line = 0
   curr_js_line = 0
   matches = []
 
@@ -67,13 +73,19 @@ exports.source_line_mappings = (coffee_lines, js_lines) ->
       return k if line_matcher js_lines[k]
     null
 
-  for line, i in coffee_lines
+  for line, cs_line in coffee_lines
     line_matcher = get_line_matcher line
     if line_matcher
-      ln = find_js_match(line_matcher)
-      if ln? and curr_js_line < ln
-        matches.push [i, ln]
-        curr_js_line = ln
+      js_line = find_js_match(line_matcher)
+      if js_line? and curr_js_line < js_line
+        first_comment_line = cs_line
+        while curr_cs_line <= first_comment_line-1 and is_comment_line coffee_lines[first_comment_line-1]
+          first_comment_line -= 1
+        if first_comment_line < cs_line
+          matches.push [first_comment_line, js_line]
+        matches.push [cs_line, js_line]
+        curr_cs_line = cs_line
+        curr_js_line = js_line
   matches.push [coffee_lines.length, js_lines.length]
   matches
 

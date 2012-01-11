@@ -9,7 +9,6 @@ pre = (s) ->
   
 
 exports.side_by_side = (matches, source_lines, dest_lines) ->
-  s_start = d_start = 0
   html = """
     <style>
     pre {
@@ -32,6 +31,8 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     ("#{prefix}:#{ln+1}" for ln in [start...end]).join '\n'
      
   last_match = ''
+  s_start = 0
+  d_start = 0
   for match in matches
     [s_end, d_end] = match
     s_line_numbers = line_numbers s_start, s_end, 'cs'
