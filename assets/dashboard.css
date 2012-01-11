@@ -2,13 +2,24 @@ pre {
   font-size: 11px;
   padding: 4px;
 }
+
 .numbers {
   color: blue;
 }
+
 .code {
   width: 610px;
   overflow: auto;
 }
+
 p {
   width: 600px;
+}
+
+.view_files {
+  width: 350px;
+}
+
+th {
+  text-align: left;
 }

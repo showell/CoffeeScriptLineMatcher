@@ -4,6 +4,7 @@ url = require 'url'
 
 {side_by_side} = require './side_by_side'
 {source_line_mappings} = require './cs_js_source_mapping'
+file_utils = require './files'
 
 DIR = null # will be cmd-line arg
 GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
@@ -11,30 +12,9 @@ JQUERY_CDN = """
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   """
 
-file_lines = (fn) ->
-  fs.readFileSync(fn).toString().split '\n'
+relative_path = (fn) -> file_utils.relative_path DIR, fn
+get_files = (regex) -> file_utils.get_files DIR, regex
 
-get_num_lines_in_file = (fn) ->
-  (fs.readFileSync(fn).toString().split '\n').length
-
-walk = (dir, f_match, f_visit) ->
-  _walk = (dir) ->
-    fns = fs.readdirSync dir
-    dirs = []
-    for fn in fns
-      fn = dir + '/' + fn
-      if f_match fn
-        f_visit fn
-      if fs.statSync(fn).isDirectory()
-        dirs.push fn
-    for dir in dirs
-      _walk dir
-    return
-  _walk(dir)
-  
-relative_path = (fn) ->
-  fn.substring(DIR.length + 1, fn.length)
-  
 table = (headers, rows) ->
   html = '<table>'
   html += '<tr>'
@@ -45,61 +25,22 @@ table = (headers, rows) ->
     html += '<tr>'
     td = (cell) ->
       if cell.toString().match /^\d+$/
-        align = "right"
+        align = "center"
       else
         align = "left"
-      "<td align='#{align}'>#{cell}</td>"
+      "<td align='#{align}' class='view_files'>#{cell}</td>"
     html += (td cell for cell in row).join ''
     html += '</tr>'
   html += '</table>'
   html
 
-split_file = (fn) ->
-  parts = fn.split '/'
-  short_fn = parts.pop()
-  [root, ext] = short_fn.split '.'
-  [parts, root, ext]
-
-get_files = (regex) ->
-  # HACK: just exclude node_modules for now
-  matcher = (fn) ->
-    fn.match(regex) and !fn.match(/node_modules/)
-  files = []
-  walk DIR, matcher, (fn) -> files.push fn
-  files
-
-score_path_similarity = (path1, path2) ->
-  # find out how many common directories there are, to
-  # help us determine the likelihood of path2 being an
-  # output directory for path1
-  score = 0
-  for part in path1
-    score += 1 if part in path2
-  score 
-
-js_file_for = (cs_file, js_files) ->
-  [cs_path, cs_root] = split_file cs_file
-  match = null
-  score = 0
-  for js_file in js_files
-    [js_path, js_root] = split_file js_file
-    if js_root == cs_root
-      new_score = score_path_similarity(cs_path, js_path)
-      if new_score > score
-        match = js_file
-        score = new_score
-  if match
-    cs_time = fs.statSync(cs_file).mtime.toISOString()
-    js_time = fs.statSync(match).mtime.toISOString()
-    return null if cs_time > js_time
-  match
-      
 list_files = (cb) ->
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
 
   html = """
     <head>
+      <link rel="stylesheet" href="dashboard.css" />
       <title> CS/JS Code Browser</title>
     </head>
     <h2>CS/JS Files in #{DIR}</h2>
@@ -110,17 +51,20 @@ list_files = (cb) ->
   curr_cs_path = null
   rows = []
   for cs_file in cs_files
-    [cs_path, cs_root] = split_file cs_file
+    [cs_path, cs_root] = file_utils.split_file cs_file
     cs_path = cs_path.join '/'
     if cs_path != curr_cs_path
       curr_cs_path = cs_path
       if rows.length > 0
         html += table headers, rows
-      html += "<h3>#{relative_path cs_path}</h3>"
+      html += """
+        <hr>
+        <h3>#{relative_path cs_path}</h3>
+        """
       rows = []
     view_link = "<a href='view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
-    row = [get_num_lines_in_file(cs_file), view_link]
-    js_file = js_file_for cs_file, js_files
+    row = [file_utils.get_num_lines_in_file(cs_file), view_link]
+    js_file = file_utils.js_file_for cs_file, js_files
     if js_file
       row.push relative_path js_file
     rows.push row
@@ -158,12 +102,12 @@ view_file = (fn, cb) ->
   cs_files = get_files /\.coffee/
   js_files = get_files /\.js/
   throw "illegal file #{fn}" unless fn in cs_files
-  js_fn = js_file_for fn, js_files
+  js_fn = file_utils.js_file_for fn, js_files
   if js_fn is null
     return cb html + "<b>No current JS file was found for #{fn}</b>"
     
-  coffee_lines = file_lines(fn)
-  js_lines = file_lines(js_fn)
+  coffee_lines = file_utils.file_lines(fn)
+  js_lines = file_utils.file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
   html += worst_match(matches)
   html += side_by_side matches, coffee_lines, js_lines
@@ -228,6 +172,7 @@ run_dashboard = (port) ->
       # Right now our code is mostly synchronous, but this won't
       # catch async exceptions, so it's just a band-aid for now.
       serve_page "Exception: #{e}"
+      throw e
 
   server.listen port
   console.log "Server running at http://localhost:#{port}/"
