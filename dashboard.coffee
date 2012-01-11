@@ -7,6 +7,9 @@ url = require 'url'
 
 DIR = null # will be cmd-line arg
 GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
+JQUERY_CDN = """
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  """
 
 file_lines = (fn) ->
   fs.readFileSync(fn).toString().split '\n'
@@ -142,6 +145,8 @@ view_file = (fn, cb) ->
     <head>
       <title>#{relative_path fn}</title>
       <link rel="stylesheet" href="dashboard.css" />
+      #{JQUERY_CDN}
+      <script type="text/javascript" src="helpers.js"></script>
     </head>
     <h4>#{relative_path fn}</h4>
     <a href="/">View files</a> (#{DIR})
@@ -155,7 +160,7 @@ view_file = (fn, cb) ->
   throw "illegal file #{fn}" unless fn in cs_files
   js_fn = js_file_for fn, js_files
   if js_fn is null
-    return cb "No current JS file was found for #{fn}"
+    return cb html + "<b>No current JS file was found for #{fn}</b>"
     
   coffee_lines = file_lines(fn)
   js_lines = file_lines(js_fn)
@@ -196,7 +201,17 @@ run_dashboard = (port) ->
       res.writeHeader 200, 'Content-Type': 'text/html'
       res.write html
       res.end()
-  
+      
+    serve_css = (fn) ->
+      res.writeHeader 200, 'Content-Type': 'text/css'
+      res.write fs.readFileSync fn
+      res.end()
+      
+    serve_js = (fn) ->
+      res.writeHeader 200, 'Content-Type': 'text/javascript'
+      res.write fs.readFileSync fn
+      res.end()
+      
     parts = url.parse(req.url, true)
     
     try
@@ -205,7 +220,9 @@ run_dashboard = (port) ->
       else if parts.pathname == '/about'
         about serve_page
       else if parts.pathname == '/dashboard.css'
-        serve_page fs.readFileSync './dashboard.css'
+        serve_css './assets/dashboard.css'
+      else if parts.pathname == '/helpers.js'
+        serve_js './assets/helpers.js'
       list_files serve_page
     catch e
       # Right now our code is mostly synchronous, but this won't
