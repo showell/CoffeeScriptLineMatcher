@@ -4,7 +4,7 @@ url = require 'url'
 
 {side_by_side} = require './side_by_side'
 {source_line_mappings} = require './cs_js_source_mapping'
-file_utils = require './files'
+file_utils = require './file_utils'
 
 DIR = null # will be cmd-line arg
 GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
@@ -172,7 +172,6 @@ run_dashboard = (port) ->
       # Right now our code is mostly synchronous, but this won't
       # catch async exceptions, so it's just a band-aid for now.
       serve_page "Exception: #{e}"
-      throw e
 
   server.listen port
   console.log "Server running at http://localhost:#{port}/"
