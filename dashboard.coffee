@@ -137,8 +137,13 @@ worst_match = (matches) ->
     
 view_file = (fn, cb) ->
   html = """
+    <head>
+      <title>#{relative_path fn}</title>
+    </head>
     <h4>#{relative_path fn}</h4>
     <a href="/">View files</a> (#{DIR})
+    <br>
+    <a href="about">About</a>
     <hr>
     """
   
@@ -158,6 +163,9 @@ view_file = (fn, cb) ->
   
 about = (cb) ->
   cb """
+    <head>
+      <title>About CoffeeScriptLineMatcher</title>
+    </head>
     <h2>About</h2>
     <a href="/">View files</a>
     
