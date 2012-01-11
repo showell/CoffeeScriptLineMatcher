@@ -23,7 +23,8 @@ walk = (dir, f_match, f_visit) ->
       if fs.statSync(fn).isDirectory()
         dirs.push fn
     for dir in dirs
-        _walk dir
+      _walk dir
+    return
   _walk(dir)
   
 relative_path = (fn) ->
@@ -32,7 +33,8 @@ relative_path = (fn) ->
 table = (headers, rows) ->
   html = '<table>'
   html += '<tr>'
-  html += ("<th>#{th}</th>" for th in headers).join ''
+  ths = ("<th>#{th}</th>" for th in headers)
+  html += ths.join ''
   html += '</tr>'
   for row in rows
     html += '<tr>'
