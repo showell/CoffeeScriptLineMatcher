@@ -23,6 +23,12 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     }
     </style>
     <table border=1>
+    <tr>
+      <th>CS</th>
+      <th>CoffeeScript</th>
+      <th>JS</th>
+      <th>JavaScript</th>
+    </tr>
   """
   
   row = (cells) ->
