@@ -1,3 +1,5 @@
+# DEPRECATED: see dashboard.coffee for more functionality
+#
 # This tool lets you create an HTML side-by-side mapping
 # of CoffeeScript and JavaScript.  Most of the heavy lifting
 # is done in other modules.

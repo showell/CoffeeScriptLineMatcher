@@ -81,6 +81,10 @@ js_file_for = (cs_file, js_files) ->
       if new_score > score
         match = js_file
         score = new_score
+  if match
+    cs_time = fs.statSync(cs_file).mtime.toISOString()
+    js_time = fs.statSync(match).mtime.toISOString()
+    return null if cs_time > js_time
   match
       
 list_files = (cb) ->
@@ -135,7 +139,7 @@ view_file = (fn, cb) ->
   throw "illegal file #{fn}" unless fn in cs_files
   js_fn = js_file_for fn, js_files
   if js_fn is null
-    return cb "No JS file for #{fn}"
+    return cb "No current JS file was found for #{fn}"
     
   coffee_lines = file_lines(fn)
   js_lines = file_lines(js_fn)
