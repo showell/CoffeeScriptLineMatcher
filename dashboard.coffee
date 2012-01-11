@@ -23,8 +23,11 @@ walk = (dir, f_match, f_visit) ->
         _walk dir
   _walk(dir)
   
-table = (rows) ->
+table = (headers, rows) ->
   html = '<table>'
+  html += '<tr>'
+  html += ("<th>#{th}</th>" for th in headers).join ''
+  html += '</tr>'
   for row in rows
     html += '<tr>'
     html += ("<td>#{cell}</td>" for cell in row).join ''
@@ -71,7 +74,15 @@ list_files = (cb) ->
       js_path = js_path.join '/'
       row.push js_path
     rows.push row
-  cb table rows
+  headers = ['CS dir', 'filename', 'JS dir']
+  html = """
+    <head>
+      <title> CS/JS Code Browser</title>
+    </head>
+    <h2>CS/JS Files in #{DIR}</h2>
+    """
+  html += table headers, rows
+  cb html
   
 worst_match = (matches) ->
   # debugging code
