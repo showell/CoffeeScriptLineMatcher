@@ -15,13 +15,12 @@ This project lets you see CS and JS code side by side, with lines matched up.
 ```
   /tmp > git clone git://github.com/showell/CoffeeScriptLineMatcher.git
   Cloning into CoffeeScriptLineMatcher...
-  remote: Counting objects: 222, done.
-  remote: Compressing objects: 100% (181/181), done.
-  remote: Total 222 (delta 129), reused 133 (delta 40)
-  Receiving objects: 100% (222/222), 159.27 KiB, done.
-  Resolving deltas: 100% (129/129), done.
+  [snip...]
+  
   /tmp > cd CoffeeScriptLineMatcher/
+  
   /tmp/CoffeeScriptLineMatcher > coffee -c *.coffee examples/*.coffee
+  
   /tmp/CoffeeScriptLineMatcher > coffee dashboard.coffee . 3000
   Server running at http://localhost:3000/
 ```
