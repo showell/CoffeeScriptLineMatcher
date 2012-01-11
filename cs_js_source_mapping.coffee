@@ -15,14 +15,13 @@ get_line_matcher = (line) ->
       ~line.indexOf(s + " =")
 
   # assignments
-  matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+=/g
+  matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+(=|\+=)/g
   if matches
-    lhs = matches[0]
-    lhs = lhs[0...lhs.length-1].trim()
+    [lhs, op] = matches[0].split /\s+/
     if lhs.length > 2
       lhs = lhs.replace '@', '.'
       return (line) ->
-        ~line.indexOf(lhs + " =")
+        ~line.indexOf(lhs + " " + op)
   
   # objects
   matches = line.match /^([A-Za-z0-9_]+\s*: )/g
