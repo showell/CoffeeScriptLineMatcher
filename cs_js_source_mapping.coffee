@@ -16,7 +16,7 @@ get_line_matcher = (line) ->
         line.indexOf("= require(#{s})") > 0
 
   # classes
-  matches = line.match /^class ([@A-Za-z0-9_.\[\]]+)/g
+  matches = line.match /^class ([@A-Za-z0-9_\.\[\]]+)/g
   if matches
     s = matches[0]
     s = s.replace "class ", ""
@@ -24,7 +24,7 @@ get_line_matcher = (line) ->
       ~line.indexOf(s + " =")
 
   # assignments
-  matches = line.match /^([@A-Za-z0-9_.\[\]]+)\s+(=|\+=)/g
+  matches = line.match /^([\$@A-Za-z0-9_\.\[\]]+)\s+(=|\+=)/g
   if matches
     [lhs, op] = matches[0].split /\s+/
     if lhs.length > 2
