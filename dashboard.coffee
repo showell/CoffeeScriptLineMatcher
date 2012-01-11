@@ -196,11 +196,17 @@ run_dashboard = (port) ->
       res.end()
   
     parts = url.parse(req.url, true)
-    if parts.pathname == '/view'
-      view_file parts.query.FILE, serve_page
-    else if parts.pathname == '/about'
-      about serve_page
-    list_files serve_page
+    
+    try
+      if parts.pathname == '/view'
+        view_file parts.query.FILE, serve_page
+      else if parts.pathname == '/about'
+        about serve_page
+      list_files serve_page
+    catch e
+      # Right now our code is mostly synchronous, but this won't
+      # catch async exceptions, so it's just a band-aid for now.
+      serve_page "Exception: #{e}"
 
   server.listen port
   console.log "Server running at http://localhost:#{port}/"
