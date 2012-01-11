@@ -26,6 +26,9 @@ walk = (dir, f_match, f_visit) ->
         _walk dir
   _walk(dir)
   
+relative_path = (fn) ->
+  fn.substring(DIR.length + 1, fn.length)
+  
 table = (headers, rows) ->
   html = '<table>'
   html += '<tr>'
@@ -102,13 +105,13 @@ list_files = (cb) ->
       curr_cs_path = cs_path
       if rows.length > 0
         html += table headers, rows
-      html += "<h3>#{cs_path}</h3>"
+      html += "<h3>#{relative_path cs_path}</h3>"
       rows = []
     view_link = "<a href='view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
     row = [get_num_lines_in_file(cs_file), view_link]
     js_file = js_file_for cs_file, js_files
     if js_file
-      row.push js_file
+      row.push relative_path js_file
     rows.push row
   html += table headers, rows
   cb html
