@@ -7,6 +7,11 @@ get_line_matcher = (line) ->
   line = line.split('# ')[0].trim()
   return null if line == ''
 
+  # do statements
+  if line.match /^do .*->$/
+    return (line) ->
+      line.match /\(function\(.*\) {/
+  
   # requires
   if line.indexOf(" = require") > 0
     matches = line.match /["'].*?["']/g

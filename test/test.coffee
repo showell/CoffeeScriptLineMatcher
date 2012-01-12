@@ -36,7 +36,7 @@ do ->
       map[cs] = js
     results[file_utils.relative_path dir, fn] = map
 
-  # ensure_no_regression results
+  ensure_no_regression results
 
   data = JSON.stringify results, null, ' '
   fs.writeFileSync 'test.json', data
