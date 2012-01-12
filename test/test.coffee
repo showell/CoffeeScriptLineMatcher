@@ -9,11 +9,14 @@ get_old_results = ->
 
 ensure_no_regression = (results) ->
   old_results = get_old_results()
+  good = true
   for fn, old_map of old_results
     map = results[fn]
     for cs, js of old_map
       if map[cs] != js
-        throw Error "mapping regression #{fn} line #{cs} js#{js} #{JSON.stringify map}"
+        good = false
+        console.log "mapping regression #{fn} line #{cs} js#{js}"
+  throw Error "bad mappings" unless good
 
 do ->
   
