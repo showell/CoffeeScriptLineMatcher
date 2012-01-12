@@ -60,8 +60,8 @@ get_line_matcher = (line) ->
     s = s.replace "->", "{"
     return (line) -> line.indexOf(s) > 0
   
-  # strings
-  matches = line.match /"[^"]+?"|'[^']+?'/g
+  # strings | regexes
+  matches = line.match /"[^"]+?"|'[^']+?'|\/[^\/]+?\//g
   if matches
     for str in matches
       if str.length >= 5
