@@ -105,7 +105,8 @@ view_file = (fn, cb) ->
   js_fn = file_utils.js_file_for fn, js_files
   if js_fn is null
     return cb html + "<b>No current JS file was found for #{fn}</b>"
-    
+   
+  html += "<b>JS file</b>: #{relative_path js_fn}<br>" 
   coffee_lines = file_utils.file_lines(fn)
   js_lines = file_utils.file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
