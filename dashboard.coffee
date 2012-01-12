@@ -41,7 +41,7 @@ list_files = (cb) ->
   html = """
     <head>
       <link rel="stylesheet" href="dashboard.css" />
-      <title> CS/JS Code Browser</title>
+      <title>CS/JS Code Browser</title>
     </head>
     <h2>CS/JS Files in #{DIR}</h2>
     <a href="about">About</a>
@@ -176,5 +176,9 @@ run_dashboard = (port) ->
   server.listen port
   console.log "Server running at http://localhost:#{port}/"
   
-[ignore, ignore, DIR, port] = process.argv
-run_dashboard(port)
+do ->
+  [ignore, ignore, DIR, port] = process.argv
+  unless port? and port.match /^\d+/
+    console.warn "You must supply a port number as the second argument"
+    return
+  run_dashboard(port)
