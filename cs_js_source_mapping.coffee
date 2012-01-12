@@ -9,7 +9,7 @@ get_line_matcher = (line) ->
 
   # simple if statements
   if line.match /^if \S+$/
-    expr = line[3...]
+    expr = line[3...].replace /@/g, 'this.'
     return (line) ->
       line.trim().indexOf("if \(#{expr}\)") == 0
   
