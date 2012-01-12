@@ -55,12 +55,6 @@ get_line_matcher = (line) ->
     for str in matches
       if str.length >= 5
         return (line) -> line.indexOf(str) >= 0
-    
-  # fallthru, find three consecutive tokens
-  get_tokens= (line) ->
-    line = line.replace /\(\)/, ' '
-    line = line.replace /\s+/, ' '
-    line.split ' '
   
   null
 
