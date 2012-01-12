@@ -13,7 +13,7 @@ ensure_no_regression = (results) ->
     map = results[fn]
     for cs, js of old_map
       if map[cs] != js
-        throw Error "mapping regression"
+        throw Error "mapping regression #{fn} line #{cs} js#{js} #{JSON.stringify map}"
 
 do ->
   
