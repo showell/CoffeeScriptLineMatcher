@@ -55,10 +55,21 @@ get_line_matcher = (line) ->
     for str in matches
       if str.length >= 5
         return (line) -> line.indexOf(str) >= 0
-
     
   # fallthru
-  null
+  get_tokens= (line) ->
+    line = line.replace /\(\)/, ' '
+    line = line.replace /\s+/, ' '
+    line.split ' '
+  
+  parts = get_tokens line
+  (line) ->
+    js_code = get_tokens(line).join ' '
+    for i in [0..parts.length - 3]
+      needle = parts[i] + " " + parts[i+1] + parts[i+2]
+      if js_code.indexOf(needle) >= 0
+        return true
+    false
 
 
 is_comment_line = (line) ->
