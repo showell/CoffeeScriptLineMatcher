@@ -62,14 +62,7 @@ get_line_matcher = (line) ->
     line = line.replace /\s+/, ' '
     line.split ' '
   
-  parts = get_tokens line
-  (line) ->
-    js_code = get_tokens(line).join ' '
-    for i in [0..parts.length - 3]
-      needle = parts[i] + " " + parts[i+1] + parts[i+2]
-      if js_code.indexOf(needle) >= 0
-        return true
-    false
+  null
 
 
 is_comment_line = (line) ->

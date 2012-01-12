@@ -78,11 +78,11 @@ worst_match = (matches) ->
   worst = null
   for match in matches
     [cs, js] = match
-    if js - last > max
-      max = js - last
-      worst = js - max + 1
-    last = js
-  "The longest JS section starts at line #{worst} (#{max} lines)."
+    if cs - last > max
+      max = cs - last
+      worst = cs - max + 1
+    last = cs
+  "The longest CS section starts at cs:#{worst} (#{max} lines)."
     
 view_file = (fn, cb) ->
   html = """
