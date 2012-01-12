@@ -2,6 +2,12 @@
 
 This project lets you see CS and JS code side by side, with lines matched up.
 
+If you would like a tour of the tool, there is a screencast w/audio:
+
+  http://www.youtube.com/watch?v=pKzrILrrTwQ&feature=youtu.be (running time 8:17)
+
+Or, just jump in!
+
 <h2>Instructions</h2>
 
   1. Download: git clone git://github.com/showell/CoffeeScriptLineMatcher.git
