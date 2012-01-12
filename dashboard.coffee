@@ -35,8 +35,8 @@ table = (headers, rows) ->
   html
 
 list_files = (cb) ->
-  cs_files = get_files /\.coffee/
-  js_files = get_files /\.js/
+  cs_files = get_files /\.coffee$/
+  js_files = get_files /\.js$/
 
   html = """
     <head>
@@ -99,8 +99,8 @@ view_file = (fn, cb) ->
     <hr>
     """
   
-  cs_files = get_files /\.coffee/
-  js_files = get_files /\.js/
+  cs_files = get_files /\.coffee$/
+  js_files = get_files /\.js$/
   throw "illegal file #{fn}" unless fn in cs_files
   js_fn = file_utils.js_file_for fn, js_files
   if js_fn is null
