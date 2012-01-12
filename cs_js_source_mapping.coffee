@@ -61,6 +61,10 @@ get_line_matcher = (line) ->
       if str.length >= 5
         return (line) -> line.indexOf(str) >= 0
   
+  # try
+  if line.match /^try$/
+    return (line) -> line.trim() == 'try {'
+    
   # catch
   if line.match /^catch /g
     catch_var = line.split(' ')[1]
