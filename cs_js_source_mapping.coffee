@@ -1,5 +1,5 @@
 # This module attempts to find source line mappings between CS code
-# and JS code.
+# and JS code.  Yes, this an enormous hack. :)
 
 get_line_matcher = (line) ->
   # return a function that returns true iff a JS
@@ -7,6 +7,12 @@ get_line_matcher = (line) ->
   line = line.split('# ')[0].trim()
   return null if line == ''
 
+  # simple if statements
+  if line.match /^if ([\$@A-Za-z0-9_\.\[\]]+)$/
+    expr = line.split(' ')[1]
+    return (line) ->
+      line.trim().indexOf("if \(#{expr}\)") == 0
+  
   # do statements
   if line.match /^do .*->$/
     return (line) ->
