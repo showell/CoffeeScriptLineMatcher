@@ -15,7 +15,7 @@ ensure_no_regression = (results) ->
     for cs, js of old_map
       if map[cs] != js
         good = false
-        console.log "mapping regression #{fn} line #{parseInt(cs)+1} js#{parseInt(js)+1}"
+        console.log "mapping regression #{fn} line #{parseInt(cs)+1} js#{parseInt(js)+1} -> #{parseInt(map[cs]) + 1}"
   throw Error "bad mappings" unless good
 
 do ->

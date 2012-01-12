@@ -8,8 +8,8 @@ get_line_matcher = (line) ->
   return null if line == ''
 
   # simple if statements
-  if line.match /^if ([\$@A-Za-z0-9_\.\[\]]+)$/
-    expr = line.split(' ')[1]
+  if line.match /^if \S+$/
+    expr = line[3...]
     return (line) ->
       line.trim().indexOf("if \(#{expr}\)") == 0
   
