@@ -61,6 +61,11 @@ get_line_matcher = (line) ->
       if str.length >= 5
         return (line) -> line.indexOf(str) >= 0
   
+  # catch
+  if line.match /^catch /g
+    catch_var = line.split(' ')[1]
+    return (line) -> line.trim().indexOf("} catch (#{catch_var}) {") == 0
+  
   null
 
 
