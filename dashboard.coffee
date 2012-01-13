@@ -42,11 +42,11 @@ list_files = (cb) ->
 
   html = """
     <head>
-      <link rel="stylesheet" href="dashboard.css" />
+      <link rel="stylesheet" href="./dashboard.css" />
       <title>CS/JS Code Browser</title>
     </head>
     <h2>CS/JS Files in #{DIR}</h2>
-    <a href="about">About</a>
+    <a href="./about">About</a>
     """
   headers = ['line count for CS', 'coffee', 'JS file']
 
@@ -64,7 +64,7 @@ list_files = (cb) ->
         <h3>#{relative_path cs_path}</h3>
         """
       rows = []
-    view_link = "<a href='/view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
+    view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
     row = [file_utils.get_num_lines_in_file(cs_file), view_link]
     js_file = file_utils.js_file_for cs_file, js_files
     if js_file
@@ -90,14 +90,14 @@ view_file = (fn, cb) ->
   html = """
     <head>
       <title>#{relative_path fn}</title>
-      <link rel="stylesheet" href="dashboard.css" />
+      <link rel="stylesheet" href="./dashboard.css" />
       #{JQUERY_CDN}
       <script type="text/javascript" src="helpers.js"></script>
     </head>
     <h4>#{relative_path fn}</h4>
-    <a href="/">View files</a> (#{DIR})
+    <a href="./">View files</a> (#{DIR})
     <br>
-    <a href="about">About</a>
+    <a href="./about">About</a>
     <hr>
     """
   
@@ -120,10 +120,10 @@ about = (cb) ->
   cb """
     <head>
       <title>About CoffeeScriptLineMatcher</title>
-      <link rel="stylesheet" href="dashboard.css" />
+      <link rel="stylesheet" href="./dashboard.css" />
     </head>
     <h2>About</h2>
-    <a href="/">View files</a>
+    <a href="./">View files</a>
     
     <p>
       GIT Repository: <a href="#{GIT_REPO}">CoffeeScriptLineMatcher</a>.
