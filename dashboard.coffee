@@ -85,7 +85,21 @@ worst_match = (matches) ->
       worst = cs - max + 1
     last = cs
   "The longest CS section starts at cs:#{worst} (#{max} lines)."
-    
+ 
+timestamps = (cs_fn, cb) ->
+  # Return timestamps of our files.  Mostly used by AJAX calls to avoid
+  # unnecessary page refreshes.
+  cs_files = get_files COFFEE_FILE_REGEX
+  throw "illegal file #{fn}" unless cs_fn in cs_files
+  ts = (fn) -> fs.statSync(fn).mtime.toISOString()
+  data =
+    cs: ts cs_fn
+  js_files = get_files /\.js$/
+  js_fn = file_utils.js_file_for cs_fn, js_files
+  if js_fn
+    data.js = ts js_fn
+  cb data
+      
 view_file = (fn, cb) ->
   html = """
     <head>
@@ -159,12 +173,19 @@ run_dashboard = (port) ->
       res.write fs.readFileSync fn
       res.end()
       
+    serve_json = (data) ->
+      res.writeHeader 200, 'Content-Type': 'text/json'
+      res.write JSON.stringify data, null, '  '
+      res.end()
+      
     parts = url.parse(req.url, true)
     
     console.log "Serving #{parts.pathname}"
     try
       if parts.pathname == '/view'
         view_file parts.query.FILE, serve_page
+      else if parts.pathname == '/timestamps'
+        timestamps parts.query.FILE, serve_json
       else if parts.pathname == '/about'
         about serve_page
       else if parts.pathname == '/dashboard.css'
