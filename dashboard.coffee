@@ -161,6 +161,7 @@ run_dashboard = (port) ->
       
     parts = url.parse(req.url, true)
     
+    console.log "Serving #{parts.pathname}"
     try
       if parts.pathname == '/view'
         view_file parts.query.FILE, serve_page
@@ -170,7 +171,10 @@ run_dashboard = (port) ->
         serve_css './assets/dashboard.css'
       else if parts.pathname == '/helpers.js'
         serve_js './assets/helpers.js'
-      list_files serve_page
+      else if parts.pathname == '/'
+        list_files serve_page
+      else
+        res.end()
     catch e
       # Right now our code is mostly synchronous, but this won't
       # catch async exceptions, so it's just a band-aid for now.
