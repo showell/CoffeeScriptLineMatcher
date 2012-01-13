@@ -122,8 +122,21 @@ view_file = (cs_fn, cb) ->
   js_files = get_files /\.js$/
   throw "illegal file #{cs_fn}" unless cs_fn in cs_files
   js_fn = file_utils.js_file_for cs_fn, js_files
+
+  add_metadata = ->
+    finger_print = get_fingerprint cs_fn, js_fn
+    finger_print = JSON.stringify finger_print, null, " "
+    html += """
+      <script>
+      CS_FN = #{JSON.stringify cs_fn};
+      FINGERPRINT = #{finger_print};
+      </script>
+      """
+
   if js_fn is null
-    return cb html + "<b>No current JS file was found for #{cs_fn}</b>"
+    html += "<b>No current JS file was found for #{cs_fn}</b>"
+    add_metadata()
+    return cb html
    
   html += "<b>JS file</b>: #{relative_path js_fn}<br>" 
   coffee_lines = file_utils.file_lines(cs_fn)
@@ -131,13 +144,8 @@ view_file = (cs_fn, cb) ->
   matches = source_line_mappings coffee_lines, js_lines
   html += worst_match(matches)
   html += side_by_side matches, coffee_lines, js_lines
-  finger_print = get_fingerprint cs_fn, js_fn
-  finger_print = JSON.stringify finger_print, null, " "
-  html += """
-    <script>
-    FINGERPRINT = #{finger_print};
-    </script>
-    """
+  add_metadata()
+
   cb html
   
 about = (cb) ->
@@ -190,7 +198,7 @@ run_dashboard = (port) ->
       
     parts = url.parse(req.url, true)
     
-    console.log "Serving #{parts.pathname}"
+    console.log "Serving #{parts.pathname} #{JSON.stringify parts.query}"
     try
       if parts.pathname == '/view'
         view_file parts.query.FILE, serve_page
