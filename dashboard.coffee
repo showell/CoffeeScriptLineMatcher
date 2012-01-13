@@ -90,16 +90,19 @@ timestamps = (cs_fn, cb) ->
   # Return timestamps of our files.  Mostly used by AJAX calls to avoid
   # unnecessary page refreshes.
   cs_files = get_files COFFEE_FILE_REGEX
-  throw "illegal file #{fn}" unless cs_fn in cs_files
+  ts = (fn) -> fs.statSync(fn).mtime.toISOString()
+  js_files = get_files /\.js$/
+  js_fn = file_utils.js_file_for cs_fn, js_files
+  cb fingerprint cs_fn, js_fn
+  
+fingerprint = (cs_fn, js_fn) ->
   ts = (fn) -> fs.statSync(fn).mtime.toISOString()
   data =
     cs: ts cs_fn
-  js_files = get_files /\.js$/
-  js_fn = file_utils.js_file_for cs_fn, js_files
   if js_fn
     data.js = ts js_fn
-  cb data
-      
+  data
+   
 view_file = (fn, cb) ->
   html = """
     <head>
