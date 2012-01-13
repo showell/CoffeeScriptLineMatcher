@@ -182,7 +182,7 @@ run_dashboard = (port) ->
 do ->
   if process.argv.length <= 2
     DIR = '.'
-    port = '5000'
+    port = '10798'
   else
     [ignore, ignore, DIR, port] = process.argv
   unless port? and port.match /^\d+/
