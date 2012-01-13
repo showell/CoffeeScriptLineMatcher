@@ -212,6 +212,12 @@ run_dashboard = (port) ->
         serve_js './assets/view_file.js'
       else if parts.pathname == '/'
         list_files serve_page
+      else if parts.pathname == '/favicon.ico'
+        # Patches welcome here, but favicon.ico is kind of pointless
+        # in a localhost dev tool.  Sending the 404 does nothing of
+        # substance, so this is really just a placeholder.
+        res.writeHeader 404
+        res.end();
       else
         res.end()
     catch e
