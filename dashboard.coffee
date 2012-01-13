@@ -106,7 +106,7 @@ view_file = (fn, cb) ->
       <title>#{relative_path fn}</title>
       <link rel="stylesheet" href="./dashboard.css" />
       #{JQUERY_CDN}
-      <script type="text/javascript" src="helpers.js"></script>
+      <script type="text/javascript" src="view_file.js"></script>
     </head>
     <h4>#{relative_path fn}</h4>
     <a href="./">View files</a> (#{DIR})
@@ -190,8 +190,8 @@ run_dashboard = (port) ->
         about serve_page
       else if parts.pathname == '/dashboard.css'
         serve_css './assets/dashboard.css'
-      else if parts.pathname == '/helpers.js'
-        serve_js './assets/helpers.js'
+      else if parts.pathname == '/view_file.js'
+        serve_js './assets/view_file.js'
       else if parts.pathname == '/'
         list_files serve_page
       else
