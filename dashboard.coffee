@@ -11,6 +11,8 @@ GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
 JQUERY_CDN = """
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   """
+COFFEE_FILE_REGEX = /\.(coffee|cof)$/
+
 
 relative_path = (fn) -> file_utils.relative_path DIR, fn
 get_files = (regex) -> file_utils.get_files DIR, regex
@@ -35,7 +37,7 @@ table = (headers, rows) ->
   html
 
 list_files = (cb) ->
-  cs_files = get_files /\.coffee$/
+  cs_files = get_files COFFEE_FILE_REGEX
   js_files = get_files /\.js$/
 
   html = """
@@ -99,7 +101,7 @@ view_file = (fn, cb) ->
     <hr>
     """
   
-  cs_files = get_files /\.coffee$/
+  cs_files = get_files COFFEE_FILE_REGEX
   js_files = get_files /\.js$/
   throw "illegal file #{fn}" unless fn in cs_files
   js_fn = file_utils.js_file_for fn, js_files
