@@ -64,7 +64,7 @@ list_files = (cb) ->
         <h3>#{relative_path cs_path}</h3>
         """
       rows = []
-    view_link = "<a href='view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
+    view_link = "<a href='/view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
     row = [file_utils.get_num_lines_in_file(cs_file), view_link]
     js_file = file_utils.js_file_for cs_file, js_files
     if js_file
