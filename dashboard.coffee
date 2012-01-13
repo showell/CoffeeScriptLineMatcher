@@ -93,9 +93,9 @@ timestamps = (cs_fn, cb) ->
   ts = (fn) -> fs.statSync(fn).mtime.toISOString()
   js_files = get_files /\.js$/
   js_fn = file_utils.js_file_for cs_fn, js_files
-  cb fingerprint cs_fn, js_fn
+  cb get_fingerprint cs_fn, js_fn
   
-fingerprint = (cs_fn, js_fn) ->
+get_fingerprint = (cs_fn, js_fn) ->
   ts = (fn) -> fs.statSync(fn).mtime.toISOString()
   data =
     cs: ts cs_fn
@@ -103,15 +103,15 @@ fingerprint = (cs_fn, js_fn) ->
     data.js = ts js_fn
   data
    
-view_file = (fn, cb) ->
+view_file = (cs_fn, cb) ->
   html = """
     <head>
-      <title>#{relative_path fn}</title>
+      <title>#{relative_path cs_fn}</title>
       <link rel="stylesheet" href="./dashboard.css" />
       #{JQUERY_CDN}
       <script type="text/javascript" src="view_file.js"></script>
     </head>
-    <h4>#{relative_path fn}</h4>
+    <h4>#{relative_path cs_fn}</h4>
     <a href="./">View files</a> (#{DIR})
     <br>
     <a href="./about">About</a>
@@ -120,17 +120,24 @@ view_file = (fn, cb) ->
   
   cs_files = get_files COFFEE_FILE_REGEX
   js_files = get_files /\.js$/
-  throw "illegal file #{fn}" unless fn in cs_files
-  js_fn = file_utils.js_file_for fn, js_files
+  throw "illegal file #{cs_fn}" unless cs_fn in cs_files
+  js_fn = file_utils.js_file_for cs_fn, js_files
   if js_fn is null
-    return cb html + "<b>No current JS file was found for #{fn}</b>"
+    return cb html + "<b>No current JS file was found for #{cs_fn}</b>"
    
   html += "<b>JS file</b>: #{relative_path js_fn}<br>" 
-  coffee_lines = file_utils.file_lines(fn)
+  coffee_lines = file_utils.file_lines(cs_fn)
   js_lines = file_utils.file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
   html += worst_match(matches)
   html += side_by_side matches, coffee_lines, js_lines
+  finger_print = get_fingerprint cs_fn, js_fn
+  finger_print = JSON.stringify finger_print, null, " "
+  html += """
+    <script>
+    FINGERPRINT = #{finger_print};
+    </script>
+    """
   cb html
   
 about = (cb) ->
