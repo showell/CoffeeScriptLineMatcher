@@ -4,7 +4,7 @@ This project lets you see CS and JS code side by side, with lines matched up.
 
 If you would like a tour of the tool, there is a screencast w/audio:
 
-  http://www.youtube.com/watch?v=pKzrILrrTwQ&feature=youtu.be (running time 8:17)
+  http://www.youtube.com/watch?v=dEze_TaORJs&feature=youtu.be (running time 8:54)
 
 Or, just jump in!
 
