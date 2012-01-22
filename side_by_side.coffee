@@ -28,8 +28,10 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     pre code, "code"
 
   line_numbers = (start, end, prefix) ->
-    numbers = ("#{prefix}:#{ln+1}" for ln in [start...end])
-    pre numbers.join('\n'), "numbers"
+    line_number = (ln) ->
+      """<a name="#{prefix}_#{ln}"><a href="##{prefix}_#{ln}">#{prefix}:#{ln}</a>"""
+    numbers = (line_number(ln+1) for ln in [start...end])
+    "<pre class='numbers'>#{numbers.join('\n')}</pre>"
      
   last_match = ''
   s_start = 0
@@ -46,4 +48,5 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     last_match = match
   
   html += '</table>'
+  html += '<h5>End</h5>'
   html  
