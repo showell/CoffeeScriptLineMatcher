@@ -12,8 +12,8 @@ Or, just jump in!
 
   1. Download: git clone git://github.com/showell/CoffeeScriptLineMatcher.git
   1. Find a directory that has .coffee and .js files in it.
-  1. (There's an examples directory in this repo; just run "coffee -c \*.coffee examples/\*.coffee assets/\*.coffee test/\*.coffee" to get js files.)
-  1. Launch the web server, supplying the directory and port number as command line parameters.
+  1. (There's an examples directory in this repo; just run "find . -name '\*.coffee' | xargs coffee -c" to get js files.)
+  1. Launch the web server, supplying the directory and port number as command line parameters: "node dashboard.js . 3000"
   1. View your CS and JS code in the browser.
   
 <h2>Example Usage</h2>
@@ -25,9 +25,9 @@ Or, just jump in!
   
   /tmp > cd CoffeeScriptLineMatcher/
   
-  /tmp/CoffeeScriptLineMatcher > coffee -c *.coffee examples/*.coffee assets/*.coffee test/*.coffee
+  /tmp/CoffeeScriptLineMatcher > find . -name '*.coffee' | xargs coffee -c
   
-  /tmp/CoffeeScriptLineMatcher > coffee dashboard.coffee . 3000
+  /tmp/CoffeeScriptLineMatcher > node dashboard.js . 3000
   Server running at http://localhost:3000/
 ```
   
