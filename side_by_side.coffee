@@ -24,7 +24,7 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
     html += '</tr>'
     
   text = (lines, start, end) ->
-    code = lines[start...end].join '\n'
+    code = lines[start...end].join('\n').replace /\t/g, '  '
     pre code, "code"
 
   line_numbers = (start, end, prefix) ->
