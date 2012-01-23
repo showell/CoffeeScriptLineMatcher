@@ -3,7 +3,7 @@ $ ->
     $win = $ window
     setPre = ->
       $('td').css width: 50
-      $('.code').css width: ($win.width()-165) * 0.50
+      $('.code').css width: ($win.width()-185) * 0.50
     $win.resize setPre
     setPre()
   
