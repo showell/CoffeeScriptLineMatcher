@@ -4,7 +4,9 @@ fs = require 'fs'
 file_lines = (fn) ->
   fs.readFileSync(fn).toString().split '\n'
 
-list = (matches, cs_lines, js_lines) ->
+list = (cs_lines, js_lines) ->
+  matches = source_line_mappings cs_lines, js_lines
+  
   snippet = (lines, start, end, prefix) ->
     for ln in [start...end]
       line = lines[ln]
@@ -25,6 +27,15 @@ list = (matches, cs_lines, js_lines) ->
 do ->
   [ignore, ignore, cs_file, js_file] = process.argv
   cs_lines = file_lines(cs_file)
-  js_lines = file_lines(js_file)
-  matches = source_line_mappings cs_lines, js_lines
-  list matches, cs_lines, js_lines
+  
+  if js_file == '-'
+    data = ''
+    stdin = process.openStdin()
+    stdin.on 'data', (buffer) ->
+      data += buffer.toString() if buffer
+    stdin.on 'end', ->
+      js_lines = data.split '\n'
+      list cs_lines, js_lines
+  else
+    js_lines = file_lines(js_file)
+    list cs_lines, js_lines
