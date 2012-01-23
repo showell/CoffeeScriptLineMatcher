@@ -198,7 +198,7 @@ run_dashboard = (port) ->
       
     parts = url.parse(req.url, true)
     
-    console.log "Serving #{parts.pathname} #{JSON.stringify parts.query}"
+    # console.log "Serving #{parts.pathname} #{JSON.stringify parts.query}"
     try
       if parts.pathname == '/view'
         view_file parts.query.FILE, serve_page
