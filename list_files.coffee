@@ -37,27 +37,30 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
   js_files = get_files /\.js$/
 
   curr_cs_path = null
-  html = ''
-  rows = []
+  dirs = []
   for cs_file in cs_files
     [cs_path, cs_root] = file_utils.split_file cs_file
     cs_path = cs_path.join '/'
     if cs_path != curr_cs_path
       curr_cs_path = cs_path
-      if rows.length > 0
-        html += render_dir_files rows
-    
-      path = file_utils.relative_path top_level_dir, cs_path
-      html += dir_header path
-      
-      rows = []
+      dir =
+        path: file_utils.relative_path top_level_dir, cs_path
+        rows: []
+      dirs.push dir
     view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
     row = [file_utils.get_num_lines_in_file(cs_file), view_link]
     js_file = file_utils.js_file_for cs_file, js_files
     if js_file
       row.push file_utils.relative_path top_level_dir, js_file
-    rows.push row
-  html += render_dir_files rows
+    dir.rows.push row
+  render dirs
+
+render = (dirs) ->
+  html = ''
+  for dir in dirs
+    html += dir_header dir.path
+    html += render_dir_files dir.rows
+  html    
 
 dir_header = (path) ->
   """
