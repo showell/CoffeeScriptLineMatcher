@@ -47,13 +47,17 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
         path: file_utils.relative_path top_level_dir, cs_path
         rows: []
       dirs.push dir
-    view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
-    row = [file_utils.get_num_lines_in_file(cs_file), view_link]
-    js_file = file_utils.js_file_for cs_file, js_files
-    if js_file
-      row.push file_utils.relative_path top_level_dir, js_file
+    row = row_for_file cs_file, cs_root, js_files, top_level_dir
     dir.rows.push row
   render dirs
+
+row_for_file = (cs_file, cs_root, js_files, top_level_dir) ->
+  view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
+  row = [file_utils.get_num_lines_in_file(cs_file), view_link]
+  js_file = file_utils.js_file_for cs_file, js_files
+  if js_file
+    row.push file_utils.relative_path top_level_dir, js_file
+  row
 
 render = (dirs) ->
   html = ''
