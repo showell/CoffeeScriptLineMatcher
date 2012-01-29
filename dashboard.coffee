@@ -4,6 +4,7 @@ url = require 'url'
 
 {side_by_side} = require './side_by_side'
 {source_line_mappings} = require './cs_js_source_mapping'
+{list_files} = require './list_files'
 file_utils = require './file_utils'
 
 DIR = null # will be cmd-line arg
@@ -11,68 +12,11 @@ GIT_REPO = "https://github.com/showell/CoffeeScriptLineMatcher"
 JQUERY_CDN = """
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   """
-COFFEE_FILE_REGEX = /\.(coffee|cof)$/
-
+COFFEE_FILE_REGEX = /\.(coffee|cof)$/  
 
 relative_path = (fn) -> file_utils.relative_path DIR, fn
 get_files = (regex) -> file_utils.get_files DIR, regex
 
-table = (headers, rows) ->
-  html = '<table>'
-  html += '<tr>'
-  ths = ("<th>#{th}</th>" for th in headers)
-  html += ths.join ''
-  html += '</tr>'
-  for row in rows
-    html += '<tr>'
-    td = (cell) ->
-      if cell.toString().match /^\d+$/
-        align = "center"
-      else
-        align = "left"
-      "<td align='#{align}' class='view_files'>#{cell}</td>"
-    html += (td cell for cell in row).join ''
-    html += '</tr>'
-  html += '</table>'
-  html
-
-list_files = (cb) ->
-  cs_files = get_files COFFEE_FILE_REGEX
-  js_files = get_files /\.js$/
-
-  html = """
-    <head>
-      <link rel="stylesheet" href="./dashboard.css" />
-      <title>CS/JS Code Browser</title>
-    </head>
-    <h2>CS/JS Files in #{DIR}</h2>
-    <a href="./about">About</a>
-    """
-  headers = ['line count for CS', 'coffee', 'JS file']
-
-  curr_cs_path = null
-  rows = []
-  for cs_file in cs_files
-    [cs_path, cs_root] = file_utils.split_file cs_file
-    cs_path = cs_path.join '/'
-    if cs_path != curr_cs_path
-      curr_cs_path = cs_path
-      if rows.length > 0
-        html += table headers, rows
-      html += """
-        <hr>
-        <h3>#{relative_path cs_path}</h3>
-        """
-      rows = []
-    view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
-    row = [file_utils.get_num_lines_in_file(cs_file), view_link]
-    js_file = file_utils.js_file_for cs_file, js_files
-    if js_file
-      row.push relative_path js_file
-    rows.push row
-  html += table headers, rows
-  cb html
-  
 worst_match = (matches) ->
   # debugging code
   last = 0
@@ -211,7 +155,7 @@ run_dashboard = (port) ->
       else if parts.pathname == '/view_file.js'
         serve_js './assets/view_file.js'
       else if parts.pathname == '/'
-        list_files serve_page
+        list_files DIR, get_files, COFFEE_FILE_REGEX, serve_page
       else if parts.pathname == '/favicon.ico'
         # Patches welcome here, but favicon.ico is kind of pointless
         # in a localhost dev tool.  Sending the 404 does nothing of
