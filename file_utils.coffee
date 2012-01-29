@@ -31,9 +31,8 @@ split_file = (fn) ->
   [parts, root, ext]
 
 get_files = (dir, regex) ->
-  # HACK: just exclude node_modules for now
   matcher = (fn) ->
-    fn.match(regex) and !fn.match(/node_modules/)
+    fn.match(regex)
   files = []
   walk dir, matcher, (fn) -> files.push fn
   files
