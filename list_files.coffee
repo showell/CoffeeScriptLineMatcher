@@ -36,8 +36,6 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
   cs_files = get_files coffee_file_regex
   js_files = get_files /\.js$/
 
-  headers = ['line count for CS', 'coffee', 'JS file']
-
   curr_cs_path = null
   html = ''
   rows = []
@@ -47,13 +45,11 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
     if cs_path != curr_cs_path
       curr_cs_path = cs_path
       if rows.length > 0
-        html += table headers, rows
+        html += render_dir_files rows
     
       path = file_utils.relative_path top_level_dir, cs_path
-      html += """
-        <hr>
-        <h3>#{path}</h3>
-        """
+      html += dir_header path
+      
       rows = []
     view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
     row = [file_utils.get_num_lines_in_file(cs_file), view_link]
@@ -61,7 +57,16 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
     if js_file
       row.push file_utils.relative_path top_level_dir, js_file
     rows.push row
-  html += table headers, rows
-  html
+  html += render_dir_files rows
+
+dir_header = (path) ->
+  """
+  <hr>
+  <h3>#{path}</h3>
+  """
+    
+render_dir_files = (rows) ->
+  headers = ['line count for CS', 'coffee', 'JS file']    
+  table headers, rows
   
 exports.list_files = list_files
