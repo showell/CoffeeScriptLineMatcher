@@ -20,8 +20,6 @@ table = (headers, rows) ->
   html
 
 list_files = (top_level_dir, get_files, coffee_file_regex, cb) ->
-  cs_files = get_files coffee_file_regex
-  js_files = get_files /\.js$/
 
   html = """
     <head>
@@ -31,9 +29,17 @@ list_files = (top_level_dir, get_files, coffee_file_regex, cb) ->
     <h2>CS/JS Files in #{top_level_dir}</h2>
     <a href="./about">About</a>
     """
+  html += list_files_body top_level_dir, get_files, coffee_file_regex
+  cb html
+  
+list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
+  cs_files = get_files coffee_file_regex
+  js_files = get_files /\.js$/
+
   headers = ['line count for CS', 'coffee', 'JS file']
 
   curr_cs_path = null
+  html = ''
   rows = []
   for cs_file in cs_files
     [cs_path, cs_root] = file_utils.split_file cs_file
@@ -56,6 +62,6 @@ list_files = (top_level_dir, get_files, coffee_file_regex, cb) ->
       row.push file_utils.relative_path top_level_dir, js_file
     rows.push row
   html += table headers, rows
-  cb html
+  html
   
 exports.list_files = list_files
