@@ -47,23 +47,35 @@ list_files_body = (top_level_dir, get_files, coffee_file_regex) ->
         path: file_utils.relative_path top_level_dir, cs_path
         rows: []
       dirs.push dir
-    row = row_for_file cs_file, cs_root, js_files, top_level_dir
+    row = data_for_file cs_file, cs_root, js_files, top_level_dir
     dir.rows.push row
   render dirs
 
-row_for_file = (cs_file, cs_root, js_files, top_level_dir) ->
-  view_link = "<a href='./view?FILE=#{encodeURI cs_file}'>#{cs_root}</a>"
-  row = [file_utils.get_num_lines_in_file(cs_file), view_link]
+data_for_file = (cs_file, cs_root, js_files, top_level_dir) ->
+  data = 
+    cs_href: "./view?FILE=#{encodeURI cs_file}"
+    cs_root: cs_root
+    cs_num_lines: file_utils.get_num_lines_in_file(cs_file)
+    
   js_file = file_utils.js_file_for cs_file, js_files
   if js_file
-    row.push file_utils.relative_path top_level_dir, js_file
+    data.js_file = js_file
+    data.js_path = file_utils.relative_path top_level_dir, js_file
+  data
+
+row_for_file = (data) ->
+  view_link = "<a href='#{data.cs_href}'>#{data.cs_root}</a>"
+  row = [data.cs_num_lines, view_link]
+  if data.js_path
+    row.push data.js_path
   row
 
 render = (dirs) ->
   html = ''
   for dir in dirs
     html += dir_header dir.path
-    html += render_dir_files dir.rows
+    rows = (row_for_file data for data in dir.rows)
+    html += render_dir_files rows
   html    
 
 dir_header = (path) ->
