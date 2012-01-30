@@ -173,12 +173,8 @@ run_dashboard = (port) ->
   console.log "Server running at http://localhost:#{port}/"
   
 do ->
-  if process.argv.length <= 2
-    DIR = '.'
-    port = '10798'
-  else
-    [ignore, ignore, DIR, port] = process.argv
+  [ignore, ignore, DIR, port] = process.argv
   unless port? and port.match /^\d+/
-    console.warn "You must supply a port number as the second argument"
+    console.warn "You must supply a directory and port number."
     return
   run_dashboard(port)
