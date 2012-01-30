@@ -100,16 +100,20 @@ exports.source_line_mappings = (coffee_lines, js_lines) ->
       return k if line_matcher js_lines[k]
     null
 
+  create_match_for_prior_comment_lines = (cs_line, js_line) ->
+    # Work backward from cs_line to get all comments and blank lines...
+    first_comment_line = cs_line
+    while curr_cs_line <= first_comment_line-1 and is_comment_line coffee_lines[first_comment_line-1]
+      first_comment_line -= 1
+    if first_comment_line < cs_line
+      matches.push [first_comment_line, js_line]
+
   for line, cs_line in coffee_lines
     line_matcher = get_line_matcher line
     if line_matcher
       js_line = find_js_match(line_matcher)
       if js_line? and curr_js_line < js_line
-        first_comment_line = cs_line
-        while curr_cs_line <= first_comment_line-1 and is_comment_line coffee_lines[first_comment_line-1]
-          first_comment_line -= 1
-        if first_comment_line < cs_line
-          matches.push [first_comment_line, js_line]
+        create_match_for_prior_comment_lines cs_line, js_line
         matches.push [cs_line, js_line]
         curr_cs_line = cs_line
         curr_js_line = js_line
