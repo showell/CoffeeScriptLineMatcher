@@ -20,3 +20,32 @@ $ ->
     # focus from the editor, so we give a couple seconds for the save
     # to happen and for coffee -wc to wake up.
     setTimeout f, 2000
+   
+  set_up_key_mappings = ->
+    digits = ''
+
+    go_to_js_line = (digits) ->
+      id = "js_#{digits}"
+      elem = $ "a##{id}"
+      if elem.length == 1
+        elem.focus()
+        true
+      else
+        alert "JS line number #{digits} does not exist"
+        false
+
+    document.onkeypress = (e) ->
+      keyunicode = e.charCode or e.keyCode
+      c = String.fromCharCode(keyunicode)
+      if '0' <= c <= '9'
+        digits += c
+        found = go_to_js_line digits
+        if not found then digits = ''
+        true
+      else if c is ' '
+        digits = ''
+        false
+      else
+        false
+  
+  set_up_key_mappings()

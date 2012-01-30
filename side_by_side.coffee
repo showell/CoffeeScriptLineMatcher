@@ -29,7 +29,8 @@ exports.side_by_side = (matches, source_lines, dest_lines) ->
 
   line_numbers = (start, end, prefix) ->
     line_number = (ln) ->
-      """<a name="#{prefix}_#{ln}"><a href="##{prefix}_#{ln}">#{prefix}:#{ln}</a>"""
+      id = "#{prefix}_#{ln}"
+      """<a name="#{id}"><a id="#{id}" href="##{id}">#{prefix}:#{ln}</a>"""
     numbers = (line_number(ln+1) for ln in [start...end])
     "<pre class='numbers'>#{numbers.join('\n')}</pre>"
      
