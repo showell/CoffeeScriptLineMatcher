@@ -9,7 +9,28 @@ head = ->
   console.log """
     <head>
       <title>CoffeeScriptLineMatcher -- static demo</title>
-      <link rel="stylesheet" href="assets/dashboard.css" />
+      <style>
+        pre {
+          font-size: 13px;
+          padding: 4px;
+        }
+
+        .numbers {
+          color: blue;
+        }
+
+        .code {
+          overflow: auto;
+        }
+
+        p {
+          width: 600px;
+        }
+
+        th {
+          text-align: left;
+        }
+      </style>
       #{JQUERY_CDN}
       <script>
         $(function() {
