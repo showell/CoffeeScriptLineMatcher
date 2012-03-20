@@ -49,10 +49,18 @@ head = ->
         })();
       </script>
     </head>
+    <p class="intro">
+      This is a static demo of <a href="https://github.com/showell/CoffeeScriptLineMatcher">CoffeeScriptLineMatcher</a> features.
+    </p>
+    <p>
+      The source files shown here come from the CoffeeScriptLineMatcher project itself.  You can learn more about the project
+      <a href="https://github.com/showell/CoffeeScriptLineMatcher#readme">here</a>.
+    </p>
     """
 
 generate_html = (js_fn, cs_fn) ->
-  html = "<b>JS file</b>: #{js_fn}<br>" 
+  html = "<hr>"
+  html += "<b>JS file</b>: #{js_fn}<br>" 
   coffee_lines = file_utils.file_lines(cs_fn)
   js_lines = file_utils.file_lines(js_fn)
   matches = source_line_mappings coffee_lines, js_lines
@@ -60,7 +68,15 @@ generate_html = (js_fn, cs_fn) ->
   console.log html
   
 do ->
-  js_fn = 'dashboard.js'
-  cs_fn = 'dashboard.coffee'
+  files = [
+    'dashboard'
+    'cs_js_source_mapping'
+    'file_utils'
+    'side_by_side'
+  ]
+    
   head()
-  generate_html js_fn, cs_fn
+  for file in files
+    js_fn = file + '.js'
+    cs_fn = file + '.coffee'
+    generate_html js_fn, cs_fn
