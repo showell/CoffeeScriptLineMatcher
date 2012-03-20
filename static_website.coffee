@@ -49,6 +49,7 @@ head = ->
         })();
       </script>
     </head>
+    <a name='top'>
     <p class="intro">
       This is a static demo of <a href="https://github.com/showell/CoffeeScriptLineMatcher">CoffeeScriptLineMatcher</a> features.
     </p>
@@ -58,8 +59,9 @@ head = ->
     </p>
     """
 
-generate_html = (js_fn, cs_fn) ->
-  html = "<hr>"
+generate_html = (fn, js_fn, cs_fn) ->
+  html = "<a name='#{fn}'><hr>"
+  html += "<a href='#top'>Back to top</a><br>"
   html += "<b>JS file</b>: #{js_fn}<br>" 
   coffee_lines = file_utils.file_lines(cs_fn)
   js_lines = file_utils.file_lines(js_fn)
@@ -74,9 +76,15 @@ do ->
     'file_utils'
     'side_by_side'
   ]
-    
   head()
-  for file in files
-    js_fn = file + '.js'
-    cs_fn = file + '.coffee'
-    generate_html js_fn, cs_fn
+
+  html = '<ul>'
+  for fn in files
+    html += "<li><a href='##{fn}'>#{fn}</a></li>"
+  html += '</ul>'
+  console.log html
+
+  for fn in files
+    js_fn = fn + '.js'
+    cs_fn = fn + '.coffee'
+    generate_html fn, js_fn, cs_fn
